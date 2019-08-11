@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.hardware.DcMotorSimple;
+//import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@SuppressWarnings("FieldCanBeLocal")
 @TeleOp(name="Main DC", group="Iterative Opmode")
 //@Disabled
 public class DC_Code1920 extends OpMode
@@ -16,7 +16,7 @@ public class DC_Code1920 extends OpMode
     private DcMotor backLeft;
     private DcMotor frontRight;
     private DcMotor backRight;
-    double dampener = 1;
+    private double dampener = 1;
 
     private int pulseLeftX ;
     private int pulseRightX ;
@@ -25,15 +25,15 @@ public class DC_Code1920 extends OpMode
     private double inchRightX;
     private double inchRightY;
     private final double pulseToInch = .0032639031;
-    double lastRY = 0;
-    double lastRX = 0;
-    double lastLX = 0;
-    double diffRY = 0;
-    double diffRX = 0;
-    double diffLX = 0;
-    double dX = 0;
-    double dY = 0;
-    double dT = 0;
+    private double lastRY = 0;
+    private double lastRX = 0;
+    private double lastLX = 0;
+    private double diffRY = 0;
+    private double diffRX = 0;
+    private double diffLX = 0;
+    private double dX = 0;
+    private double dY = 0;
+    private double dT = 0;
     private double fieldX = 72;
     private double fieldY = 72;
     private double fieldT = 0;
@@ -89,7 +89,7 @@ public class DC_Code1920 extends OpMode
             frontRight.setPower(1*dampener);
             backLeft.setPower(1*dampener);
             backRight.setPower(-1*dampener);
-        } else if (gamepad1.dpad_up) {
+        } else if (gamepad1.dpad_right) {
             frontLeft.setPower(1*dampener);
             frontRight.setPower(-1*dampener);
             backLeft.setPower(-1*dampener);

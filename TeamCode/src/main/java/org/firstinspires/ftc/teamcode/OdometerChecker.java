@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.hardware.DcMotorSimple;
+//import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@SuppressWarnings("FieldCanBeLocal")
 @TeleOp(name="Odometer Checker", group="Iterative Opmode")
 //@Disabled
+
 public class OdometerChecker extends OpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,7 +23,7 @@ public class OdometerChecker extends OpMode
     private double inchLeftX;
     private double inchRightX;
     private double inchRightY;
-    private final double pulseToInch = .0032639031;
+    private double pulseToInch = .0032639031;
 
     public void init()
     {
