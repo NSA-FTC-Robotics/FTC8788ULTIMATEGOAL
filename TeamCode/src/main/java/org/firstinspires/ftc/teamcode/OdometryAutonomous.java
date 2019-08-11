@@ -26,26 +26,30 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double inchRightX;
     private double inchRightY;
     private final double pulseToInch = .0032639031;
-    double lastRY = 0;
-    double lastRX = 0;
-    double lastLX = 0;
-    double diffRY = 0;
-    double diffRX = 0;
-    double diffLX = 0;
-    double dX = 0;
-    double dY = 0;
-    double dT = 0;
+    private double lastRY = 0;
+    private double lastRX = 0;
+    private double lastLX = 0;
+    private  double diffRY = 0;
+    private double diffRX = 0;
+    private double diffLX = 0;
+    private double dX = 0;
+    private double dY = 0;
+    private double dT = 0;
     private double fieldX;
     private double fieldY;
     private double fieldT;
-    double flta = 0;
-    double frta = 0;
-    double brta = 0;
-    double blta = 0;
-    double flma = 0;
-    double frma = 0;
-    double brma = 0;
+    private double flta = 0;
+    private double frta = 0;
+    private double brta = 0;
+    private double blta = 0;
+    private double flma = 0;
+    private double frma = 0;
+    private double brma = 0;
     private double blma = 0;
+    private double lastTime;
+    private double diffTime;
+    private double vX;
+    private double vY;
 
 
     public void setConfig()
@@ -104,10 +108,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
         diffRX= inchRightX-lastRX;
         diffLX = inchLeftX-lastLX;
 
+        diffTime = getRuntime()-lastTime;
+
         dX =(diffLX+ diffRX)/2;
         dY = diffRY  + 16*dT/(2*Math.PI);
         dT = (diffLX-diffRX)/14.5;
 
+        vX = dX/diffTime;
+        vY = dY/diffTime;
 
         fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
         fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
@@ -116,6 +124,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
         lastRY = inchRightY;
         lastRX = inchRightX;
         lastLX = inchLeftX;
+
+        lastTime = getRuntime();
 
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
@@ -299,6 +309,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         }
 
     }
+
 
 
 }
