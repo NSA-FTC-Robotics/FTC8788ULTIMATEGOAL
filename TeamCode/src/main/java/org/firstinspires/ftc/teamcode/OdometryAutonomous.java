@@ -49,7 +49,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double lastTime = 0;
     private double diffTime = 0;
     private double vX;
-    private double vY;
+    private double vZ;
 
 
     public void setConfig()
@@ -115,7 +115,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         dT = (diffLX-diffRX)/14.5;
 
         vX = dX/diffTime;
-        vY = dY/diffTime;
+        vZ = dY/diffTime;
 
         fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
         fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
