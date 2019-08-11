@@ -45,7 +45,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     double flma = 0;
     double frma = 0;
     double brma = 0;
-    double blma = 0;
+    private double blma = 0;
 
 
     public void setConfig()
