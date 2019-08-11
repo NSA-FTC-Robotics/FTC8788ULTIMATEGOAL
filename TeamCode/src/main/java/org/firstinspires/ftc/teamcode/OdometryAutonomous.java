@@ -46,7 +46,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double frma = 0;
     private double brma = 0;
     private double blma = 0;
-    private double lastTime;
+    private double lastTime = 0;
     private double diffTime = 0;
     private double vX;
     private double vY;
