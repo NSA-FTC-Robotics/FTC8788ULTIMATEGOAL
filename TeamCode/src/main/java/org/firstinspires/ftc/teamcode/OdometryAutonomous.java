@@ -50,6 +50,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double diffTime = 0;
     private double vX;
     private double vY;
+    private double speed;
 
 
     public void setConfig()
@@ -116,6 +117,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         vX = dX/diffTime;
         vY = dY/diffTime;
+
+        speed = Math.hypot(vX,vY);
 
         fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
         fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
@@ -308,6 +311,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
             updateposition();
         }
 
+    }
+    public void halt()
+    {
+        updateposition();
+        if(speed>0.1)
+        {
+
+        }
     }
 
 
