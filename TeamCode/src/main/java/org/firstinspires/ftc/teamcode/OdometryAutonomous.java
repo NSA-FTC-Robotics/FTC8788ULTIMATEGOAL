@@ -281,14 +281,13 @@ public abstract class OdometryAutonomous extends LinearOpMode
        blma = y-x ;
        brma = y+x ;
     }
-    public void driveTo (double targetX, double targetY, double targetTheta, double power) // degrees input
+    public void driveTo (double targetX, double targetY, double power)
     {
-        //setTheta(target(targetX,targetY),0.4);
+
         double distance =0;
         double da = 1;
         double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5 || Math.abs(Math.toDegrees(fieldT)  - targetTheta) > 1)
-        {
+
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
             while (distance>1.5)
             {
@@ -307,11 +306,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 updateposition();
 
             }
-            setTheta(targetTheta,0.4);
+            halt();
+
             updateposition();
         }
 
-    }
+
     public void halt()
     {
         double c = -1;
