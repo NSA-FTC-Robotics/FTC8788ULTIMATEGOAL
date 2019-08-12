@@ -314,10 +314,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void halt()
     {
+        double c = -1;
         updateposition();
-        if(speed>0.1)
+        while(speed>0.1)
         {
-
+            frontLeft.setPower(c*(vY + vX));
+            frontRight.setPower(c*(vY - vX));
+            backLeft.setPower(c*(vY - vX));
+            backRight.setPower(c*(vY + vX));
         }
     }
 
