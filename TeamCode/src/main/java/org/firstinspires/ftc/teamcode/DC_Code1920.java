@@ -17,7 +17,7 @@ public class DC_Code1920 extends OpMode
     private DcMotor frontRight;
     private DcMotor backRight;
     private double dampener = 1;
-
+// tester
     private int pulseLeftX ;
     private int pulseRightX ;
     private int pulseRightY ;
