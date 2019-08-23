@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 public class TestOdometry extends OdometryAutonomous
 {
 
-
+@Override
     public void runOpMode()
     {
        setConfig();
@@ -24,7 +24,8 @@ public class TestOdometry extends OdometryAutonomous
 
         if (opModeIsActive())
         {
-       driveTo(72,72,0,1);
+       driveTo(72,72,0.6);
+       setTheta(0,0.4);
        sleep(5000);
         }
 

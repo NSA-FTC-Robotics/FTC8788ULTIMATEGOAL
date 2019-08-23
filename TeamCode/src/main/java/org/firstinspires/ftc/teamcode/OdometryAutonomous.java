@@ -202,6 +202,10 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 }
             }
         }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
     }
     public void forward(double power)
     {
@@ -289,11 +293,11 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance>1.5)
+            while (distance>.5)
             {
                 distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-                if(distance<30)da =0.5;
-                if (distance<10) da = 0.3;
+                if(distance<30)da =0.4;
+                if (distance<10) da = 0.2;
                 updateposition();
                 alterTheta(target(targetX, targetY));
                 alterTragectory(target(targetX,targetY));
@@ -306,26 +310,16 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 updateposition();
 
             }
-            halt();
+            frontLeft.setPower(-0.3);
+            frontRight.setPower(-0.3);
+            backLeft.setPower(0.3);
+            backRight.setPower(0.3);
+           // halt();
 
             updateposition();
         }
 
 
-    public void halt()
-    {
-        double c = -1;
-        updateposition();
-        while(speed>0.1)
-        {
-            updateposition();
-            frontLeft.setPower(c*(vY + vX));
-            frontRight.setPower(c*(vY - vX));
-            backLeft.setPower(c*(vY - vX));
-            backRight.setPower(c*(vY + vX));
-            updateposition();
-        }
-    }
 
 
 
