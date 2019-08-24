@@ -295,25 +295,42 @@ public abstract class OdometryAutonomous extends LinearOpMode
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
             while (distance>.5)
             {
-                distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-                if(distance<30)da =0.4;
-                if (distance<10) da = 0.2;
+                while (distance>.1) {
+                    distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
+                    if (distance < 30) da = 0.4;
+                    if (distance < 10) da = 0.2;
+                    updateposition();
+                    alterTheta(target(targetX, targetY));
+                    alterTragectory(target(targetX, targetY));
+                    frontLeft.setPower((flma * power * da) + flta * da);
+                    frontRight.setPower((frma * power * da) + frta * da);
+                    backLeft.setPower((blma * power * da) + blta * da);
+                    backRight.setPower((brma * power * da) + brta * da);
+                    updateposition();
+                }
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(0);
+                sleep(100);
                 updateposition();
-                alterTheta(target(targetX, targetY));
-                alterTragectory(target(targetX,targetY));
-                frontLeft.setPower((flma*power*da) +flta*da);
-                frontRight.setPower((frma*power*da)+frta*da);
-                backLeft.setPower((blma*power*da)+blta*da);
-                backRight.setPower((brma*power*da)+brta*da);
-
-
-                updateposition();
+                distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
 
             }
-            frontLeft.setPower(-0.3);
-            frontRight.setPower(-0.3);
-            backLeft.setPower(0.3);
-            backRight.setPower(0.3);
+            /*double fls = -frontLeft.getPower();
+            double frs = -frontRight.getPower();
+            double bls = -backLeft.getPower();
+            double brs =-backRight.getPower();
+            frontLeft.setPower(fls);
+            frontRight.setPower(frs);
+            backLeft.setPower(bls);
+            backRight.setPower(brs);
+            sleep(400);*/
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
            // halt();
 
             updateposition();
