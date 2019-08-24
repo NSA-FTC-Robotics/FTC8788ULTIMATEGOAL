@@ -133,11 +133,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
 
-
-
-
-
-
         telemetry.addData("x coordinate: ", fieldX);
         telemetry.addData("y coordinate: ", fieldY);
         telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
@@ -178,7 +173,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
                     power = power / 1.2;
                     num = num / 2;
                 }
-
                 if ((targetTheta < t) && (targetTheta <= t - 180)) {
                     frontLeft.setPower(power);
                     frontRight.setPower(-power);
@@ -319,19 +313,30 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 backRight.setPower(0);
                 updateposition();
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-
             }
-
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-
-           // halt();
-
             updateposition();
         }
-
+    public void waypoint(double targetX, double targetY, double power, double precision)
+    {
+        double distance =0;
+        distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+       while (distance > precision)
+       {
+           updateposition();
+           alterTheta(target(targetX, targetY));
+           alterTragectory(target(targetX, targetY));
+           frontLeft.setPower((flma * power) + flta);
+           frontRight.setPower((frma * power) + frta);
+           backLeft.setPower((blma * power) + blta);
+           backRight.setPower((brma * power) + brta);
+           updateposition();
+           distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+       }
+    }
 
 
 

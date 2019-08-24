@@ -9,27 +9,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-
 @Autonomous(name = "Test Odometry")
 //@Disabled
 public class TestOdometry extends OdometryAutonomous
 {
-
 @Override
     public void runOpMode()
     {
        setConfig();
        initCoords(12,12,0);
         waitForStart();
-
         if (opModeIsActive())
         {
-       driveTo(72,72,0.6);
-       setTheta(0,0.4);
-       sleep(5000);
+            waypoint(72,24,0.6,0.5);
+            waypoint(24,72,0.6,0.2);
+            driveTo(72,72,0.6);
+            setTheta(0,0.4);
         }
-
-
     }
-
 }
