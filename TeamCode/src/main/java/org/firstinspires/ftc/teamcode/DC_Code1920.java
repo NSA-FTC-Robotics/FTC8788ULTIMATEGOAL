@@ -37,6 +37,7 @@ public class DC_Code1920 extends OpMode
     private double fieldX = 72;
     private double fieldY = 72;
     private double fieldT = 0;
+    private boolean mode = false;
 
     public void init()
     {
@@ -73,6 +74,35 @@ public class DC_Code1920 extends OpMode
         telemetry.addData("Running", ";)");
         telemetry.update();
         telemetry.clear();
+
+        pulseRightX = backRight.getCurrentPosition();
+        pulseLeftX = frontLeft.getCurrentPosition();
+
+        inchRightX = pulseRightX * pulseToInch * -1;
+        inchLeftX = pulseLeftX * pulseToInch * -1;
+
+        diffLX = inchLeftX-lastLX;
+        diffRX= inchRightX-lastRX;
+
+        dT = (diffLX-diffRX)/14.5;
+
+        fieldT += dT;
+
+        lastRX = inchRightX;
+        lastLX = inchLeftX;
+
+        if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
+        else if (fieldT<0) fieldT += 2*Math.PI;
+
+        if(gamepad1.x) mode = true;
+        if (gamepad1.y) mode = false;
+
+        double commandTheta = Math.atan(-gamepad1.left_stick_y/gamepad1.left_stick_x);
+        double driveTheta = commandTheta + fieldT;
+        if(driveTheta<0) driveTheta += 2*Math.PI;
+        else if (driveTheta>=2*Math.PI) driveTheta -= 2*Math.PI;
+        driveTheta = 0.5*Math.PI - driveTheta;
+
         dampener = 1-(0.7*(gamepad1.left_trigger));
         if (gamepad1.dpad_up) {
             frontLeft.setPower(1*dampener);
@@ -94,49 +124,46 @@ public class DC_Code1920 extends OpMode
             frontRight.setPower(-1*dampener);
             backLeft.setPower(-1*dampener);
             backRight.setPower(1*dampener);
-        } else {
-            frontLeft.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
-            frontRight.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
-            backLeft.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
-            backRight.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
+        } else
+        {
+           if (mode)
+           {
+
+               double x = Math.cos(driveTheta);
+               double y =  Math.sin(driveTheta);
+
+               frontLeft.setPower((y + x + (gamepad1.right_stick_x)));
+               frontRight.setPower((y - x - (gamepad1.right_stick_x)));
+               backLeft.setPower((y - x + (gamepad1.right_stick_x)));
+               backRight.setPower((y + x - (gamepad1.right_stick_x)));
+
+           }
+           else
+            {
+                frontLeft.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
+                frontRight.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
+                backLeft.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
+                backRight.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
+        }
+
 
 
         }
-        pulseRightY = frontRight.getCurrentPosition();
         pulseRightX = backRight.getCurrentPosition();
         pulseLeftX = frontLeft.getCurrentPosition();
 
-        inchRightY = pulseRightY * pulseToInch;
         inchRightX = pulseRightX * pulseToInch * -1;
         inchLeftX = pulseLeftX * pulseToInch * -1;
 
-        diffRY = inchRightY-lastRY;
-        diffRX= inchRightX-lastRX;
-        diffLX = inchLeftX-lastLX;
-
-        dX =(diffLX+ diffRX)/2;
-        dY = diffRY  + 16*dT/(2*Math.PI);
-        dT = (diffLX-diffRX)/14.5;
-
-
-        fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
-        fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
-        fieldT += dT;
-
-        lastRY = inchRightY;
-        lastRX = inchRightX;
-        lastLX = inchLeftX;
+        fieldT = (inchLeftX-inchRightX)/14.5;
 
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
 
+        telemetry.addData("Field-Centric Mode", mode);
+        telemetry.addData("commandTheta:",commandTheta);
+        telemetry.addData("Theta",Math.toDegrees(fieldT));
 
-
-
-
-        telemetry.addData("x coordinate: ", fieldX);
-        telemetry.addData("y coordinate: ", fieldY);
-        telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
         telemetry.update();
         telemetry.clear();
 
