@@ -39,6 +39,7 @@ public class DC_Code1920 extends OpMode
     private double fieldT = 0;
     private boolean mode = false;
 
+
     public void init()
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
@@ -99,8 +100,6 @@ public class DC_Code1920 extends OpMode
 
         double commandTheta = Math.atan(-gamepad1.left_stick_y/gamepad1.left_stick_x);
         double driveTheta = commandTheta + fieldT;
-        if(driveTheta<0) driveTheta += 2*Math.PI;
-        else if (driveTheta>=2*Math.PI) driveTheta -= 2*Math.PI;
 
         dampener = 1-(0.7*(gamepad1.left_trigger));
         if (gamepad1.dpad_up) {
@@ -125,22 +124,20 @@ public class DC_Code1920 extends OpMode
             backRight.setPower(1*dampener);
         } else
         {
-           if (mode)
+           /*if (mode)
            {
                frontLeft.setPower((Math.sin(driveTheta)+Math.cos(driveTheta)) +(gamepad1.right_stick_x));
                frontRight.setPower((Math.sin(driveTheta)-Math.cos(driveTheta))-(gamepad1.right_stick_x));
                backLeft.setPower((Math.sin(driveTheta)-Math.cos(driveTheta))+(gamepad1.right_stick_x));
                backRight.setPower((Math.sin(driveTheta)+Math.cos(driveTheta))-(gamepad1.right_stick_x));
            }
-           else
+           else*/
             {
                 frontLeft.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
                 frontRight.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
                 backLeft.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
                 backRight.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
         }
-
-
 
         }
         pulseRightX = backRight.getCurrentPosition();
@@ -155,7 +152,6 @@ public class DC_Code1920 extends OpMode
         else if (fieldT<0) fieldT += 2*Math.PI;
 
         telemetry.addData("Field-Centric Mode", mode);
-        telemetry.addData("commandTheta:",commandTheta);
         telemetry.addData("Theta",Math.toDegrees(fieldT));
 
         telemetry.update();
