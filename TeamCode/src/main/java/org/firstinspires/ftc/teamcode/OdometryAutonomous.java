@@ -38,17 +38,17 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double fieldX;
     private double fieldY;
     private double fieldT;
-    private double flta = 0;
+    private double flta = 0; // front left turn aspect
     private double frta = 0;
     private double brta = 0;
     private double blta = 0;
-    private double flma = 0;
+    private double flma = 0; // front left move aspect
     private double frma = 0;
     private double brma = 0;
     private double blma = 0;
-    private double lastTime = 0;
+    private double lastTime = 0; // time variables to find v
     private double diffTime = 0;
-    private double vX;
+    private double vX; //velcoity in the robot's x direction
     private double vY;
 
 
@@ -94,6 +94,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         return fieldT;
     }
+
     public void updateposition()
     {
         pulseRightY = frontRight.getCurrentPosition();
@@ -129,11 +130,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
-
-
-
-
-
 
         telemetry.addData("x coordinate: ", fieldX);
         telemetry.addData("y coordinate: ", fieldY);
@@ -302,14 +298,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
 
                 updateposition();
-
             }
+
             setTheta(targetTheta,0.4);
             updateposition();
         }
 
     }
-
-
 
 }

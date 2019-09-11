@@ -130,17 +130,11 @@ public class DC_Code1920 extends OpMode
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
 
-
-
-
-
         telemetry.addData("x coordinate: ", fieldX);
         telemetry.addData("y coordinate: ", fieldY);
         telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
         telemetry.update();
         telemetry.clear();
-
-
     }
 
     @Override
