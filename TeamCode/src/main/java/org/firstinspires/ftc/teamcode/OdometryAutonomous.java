@@ -38,18 +38,19 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private double fieldX;
     private double fieldY;
     private double fieldT;
-    private double flta = 0; // front left turn aspect
+    private double flta = 0;
     private double frta = 0;
     private double brta = 0;
     private double blta = 0;
-    private double flma = 0; // front left move aspect
+    private double flma = 0;
     private double frma = 0;
     private double brma = 0;
     private double blma = 0;
-    private double lastTime = 0; // time variables to find v
+    private double lastTime = 0;
     private double diffTime = 0;
-    private double vX; //velcoity in the robot's x direction
+    private double vX;
     private double vY;
+    private double speed;
 
 
     public void setConfig()
@@ -94,7 +95,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         return fieldT;
     }
-
     public void updateposition()
     {
         pulseRightY = frontRight.getCurrentPosition();
@@ -118,6 +118,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
         vX = dX/diffTime;
         vY = dY/diffTime;
 
+        speed = Math.hypot(vX,vY);
+
         fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
         fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
         fieldT += dT;
@@ -130,6 +132,11 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
         else if (fieldT<0) fieldT += 2*Math.PI;
+
+
+
+
+
 
         telemetry.addData("x coordinate: ", fieldX);
         telemetry.addData("y coordinate: ", fieldY);
@@ -274,14 +281,13 @@ public abstract class OdometryAutonomous extends LinearOpMode
        blma = y-x ;
        brma = y+x ;
     }
-    public void driveTo (double targetX, double targetY, double targetTheta, double power) // degrees input
+    public void driveTo (double targetX, double targetY, double power)
     {
-        //setTheta(target(targetX,targetY),0.4);
+
         double distance =0;
         double da = 1;
         double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while(Math.abs(fieldX - targetX) > 1.5 || Math.abs(fieldY - targetY) > 1.5 || Math.abs(Math.toDegrees(fieldT)  - targetTheta) > 1)
-        {
+
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
             while (distance>1.5)
             {
@@ -298,12 +304,29 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
 
                 updateposition();
-            }
 
-            setTheta(targetTheta,0.4);
+            }
+            halt();
+
             updateposition();
         }
 
+
+    public void halt()
+    {
+        double c = -1;
+        updateposition();
+        while(speed>0.1)
+        {
+            updateposition();
+            frontLeft.setPower(c*(vY + vX));
+            frontRight.setPower(c*(vY - vX));
+            backLeft.setPower(c*(vY - vX));
+            backRight.setPower(c*(vY + vX));
+            updateposition();
+        }
     }
+
+
 
 }
