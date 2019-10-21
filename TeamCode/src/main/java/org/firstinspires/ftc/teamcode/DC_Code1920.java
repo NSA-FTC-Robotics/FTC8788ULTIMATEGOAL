@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
-//import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -26,7 +26,12 @@ public class DC_Code1920 extends OpMode
     private DcMotor backLeft;
     private DcMotor frontRight;
     private DcMotor backRight;
+    private DcMotor leftWheel;
+    private DcMotor rightWheel;
     private double dampener = 1;
+    private Servo leftCollector;
+    private Servo rightCollector;
+
 // tester
     private int pulseLeftX ;
     private int pulseRightX ;
@@ -78,6 +83,17 @@ public class DC_Code1920 extends OpMode
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftCollector = hardwareMap.get(Servo.class, "left_collector");
+        leftCollector.setPosition(0);
+
+        rightCollector = hardwareMap.get(Servo.class, "right_collector");
+        rightCollector.setPosition(1);
+
+        leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
+        rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+
+
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -159,6 +175,33 @@ public class DC_Code1920 extends OpMode
 
         strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
+    if(gamepad1.right_bumper)
+    {
+        rightCollector.setPosition(0.8);
+    }
+    else rightCollector.setPosition(1);
+    if (gamepad1.left_bumper)
+    {
+        leftCollector.setPosition(0.2);
+    }
+    else leftCollector.setPosition(0);
+
+
+    if(gamepad1.y)
+    {
+        leftWheel.setPower(1);
+        rightWheel.setPower(-1);
+    }
+    if(gamepad1.b)
+        {
+            leftWheel.setPower(-1);
+            rightWheel.setPower(11);
+        }
+    if(gamepad1.x)
+        {
+            leftWheel.setPower(0);
+            rightWheel.setPower(0);
+        }
         pulseRightY = frontRight.getCurrentPosition();
         pulseRightX = backRight.getCurrentPosition();
         pulseLeftX = frontLeft.getCurrentPosition();
@@ -298,10 +341,10 @@ public class DC_Code1920 extends OpMode
         double x = Math.cos(direction);
         double y =  Math.sin(direction);
 
-        frontLeft.setPower((y + x) * power);
-        frontRight.setPower((y - x) * power);
-        backLeft.setPower((y - x) * power);
-        backRight.setPower((y + x) * power);
+        frontLeft.setPower(((y + x) * power)+gamepad1.right_stick_x);
+        frontRight.setPower(((y - x) * power)-gamepad1.right_stick_x);
+        backLeft.setPower(((y - x) * power)+gamepad1.right_stick_x);
+        backRight.setPower(((y + x) * power)-gamepad1.right_stick_x);
 
         telemetry.addData("cos:" , x);
         telemetry.addData("sin:", y);
