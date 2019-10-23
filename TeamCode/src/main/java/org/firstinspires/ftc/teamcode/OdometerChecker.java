@@ -17,6 +17,10 @@ public class OdometerChecker extends OpMode
     private DcMotor frontRight;
     private DcMotor backRight;
 
+    private DcMotor intake1; //port 0
+    private DcMotor intake2; //port 1
+    private DcMotor passiveWinch; //port 2
+
     private int pulseLeftX ;
     private int pulseRightX ;
     private int pulseRightY ;
@@ -36,13 +40,22 @@ public class OdometerChecker extends OpMode
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake1 = hardwareMap.get(DcMotor.class, "Intake1");
+        intake1.setDirection(DcMotor.Direction.FORWARD);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake2 = hardwareMap.get(DcMotor.class, "Intake2");
+        intake2.setDirection(DcMotor.Direction.FORWARD);
+
+        passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
+        passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        passiveWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     @Override
     public void start()
@@ -58,9 +71,9 @@ public class OdometerChecker extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        pulseRightY = frontRight.getCurrentPosition();
-        pulseRightX = backRight.getCurrentPosition();
-        pulseLeftX = frontLeft.getCurrentPosition();
+        pulseRightY = passiveWinch.getCurrentPosition(); //passiveWich
+        pulseRightX = intake2.getCurrentPosition(); //intake 2
+        pulseLeftX = intake1.getCurrentPosition(); //intake1
 
         inchRightY = pulseRightY * pulseToInch;
         inchRightX = pulseRightX * pulseToInch * -1;

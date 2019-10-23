@@ -85,10 +85,10 @@ public class DC_Code1920 extends OpMode
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        leftCollector.setPosition(0);
+        leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        rightCollector.setPosition(1);
+        rightCollector.setPosition(0);
 
         leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
         rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
@@ -177,14 +177,14 @@ public class DC_Code1920 extends OpMode
 
     if(gamepad1.right_bumper)
     {
-        rightCollector.setPosition(0.8);
+        rightCollector.setPosition(0.2);
     }
-    else rightCollector.setPosition(1);
+    else rightCollector.setPosition(0);
     if (gamepad1.left_bumper)
     {
-        leftCollector.setPosition(0.2);
+        leftCollector.setPosition(0.8);
     }
-    else leftCollector.setPosition(0);
+    else leftCollector.setPosition(1);
 
 
     if(gamepad1.y)
