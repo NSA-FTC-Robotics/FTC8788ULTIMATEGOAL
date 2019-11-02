@@ -17,6 +17,10 @@ public class OdometerChecker extends OpMode
     private DcMotor frontRight;
     private DcMotor backRight;
 
+    private DcMotor intake1; //port 0
+    private DcMotor intake2; //port 1
+    private DcMotor passiveWinch; //port 2
+
     private int pulseLeftX ;
     private int pulseRightX ;
     private int pulseRightY ;
@@ -24,9 +28,6 @@ public class OdometerChecker extends OpMode
     private double inchRightX;
     private double inchRightY;
     private double pulseToInch = .0032639031;
-    private DcMotor intake1; //port 0
-    private DcMotor intake2; //port 1
-    private DcMotor passiveWinch; //port 2
 
     public void init()
     {
@@ -70,7 +71,7 @@ public class OdometerChecker extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        pulseRightY = passiveWinch.getCurrentPosition(); //passiveWinch
+        pulseRightY = passiveWinch.getCurrentPosition(); //passiveWich
         pulseRightX = intake2.getCurrentPosition(); //intake 2
         pulseLeftX = intake1.getCurrentPosition(); //intake1
 

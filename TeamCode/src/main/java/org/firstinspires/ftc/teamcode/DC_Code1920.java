@@ -31,6 +31,10 @@ public class DC_Code1920 extends OpMode
     private double dampener = 1;
     private Servo leftCollector;
     private Servo rightCollector;
+    private Servo rightscorer;
+    private Servo leftscorer;
+    private Servo encoderlift;
+
 
 // tester
     private int pulseLeftX ;
@@ -85,13 +89,21 @@ public class DC_Code1920 extends OpMode
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        leftCollector.setPosition(0);
+        leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        rightCollector.setPosition(1);
+        rightCollector.setPosition(0);
 
         leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
         rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+
+        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
+        leftscorer.setPosition(0);
+        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
+        rightscorer.setPosition(1);
+
+        encoderlift = hardwareMap.get(Servo.class, "encoderlift");
+        encoderlift.setPosition(0.5);
 
 
 
@@ -177,14 +189,14 @@ public class DC_Code1920 extends OpMode
 
     if(gamepad1.right_bumper)
     {
-        rightCollector.setPosition(0.8);
+        rightCollector.setPosition(0.2);
     }
-    else rightCollector.setPosition(1);
+    else rightCollector.setPosition(0);
     if (gamepad1.left_bumper)
     {
-        leftCollector.setPosition(0.2);
+        leftCollector.setPosition(0.8);
     }
-    else leftCollector.setPosition(0);
+    else leftCollector.setPosition(1);
 
 
     if(gamepad1.y)
@@ -252,6 +264,23 @@ public class DC_Code1920 extends OpMode
         {
             towerHeight = 1.0;
         }
+
+        if(gamepad2.right_bumper) {
+            leftscorer.setPosition(0.8);
+            rightscorer.setPosition(0.2);
+        }
+
+        if(gamepad2.left_bumper)
+        {
+            leftscorer.setPosition(0);
+            rightscorer.setPosition(1);
+        }
+        if(gamepad2.right_trigger>0.2)
+        {
+            leftscorer.setPosition(.7);
+            rightscorer.setPosition(.3);
+        }
+
 
 
        /* telemetry.addData("x coordinate: ", fieldX);
