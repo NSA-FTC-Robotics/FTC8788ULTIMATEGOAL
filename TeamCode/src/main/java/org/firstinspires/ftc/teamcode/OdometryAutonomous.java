@@ -28,18 +28,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
     //                             //
     /////////////////////////////////
 
-/*
-                          😜
-                       👊/||\_
-                       _/¯  ¯\_
-
-                        👋 😳
-                           || \_
-                        _/¯  ¯\_
-
-
- */
-
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeft;
     private DcMotor backLeft;
