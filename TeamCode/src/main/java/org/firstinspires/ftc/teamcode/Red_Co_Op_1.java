@@ -32,9 +32,16 @@ import java.util.List;
 @Autonomous(name = "Red Co-op 1")
 public class Red_Co_Op_1 extends OdometryAutonomous
 {
+    private static final double ScreenSizeX = 1280;
+    private static final double ScreenSizeY = 720;
+    private static final double ScreenMiddleX = ScreenSizeX/2;
+    private static final double ScreenMiddleY = ScreenSizeY/2;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
+    double SkystoneLeft, SkystoneRight, SkystoneTop, SkystoneBottom;
+    double SkystoneMiddleX, SkystoneMiddleY;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -82,7 +89,7 @@ public class Red_Co_Op_1 extends OdometryAutonomous
         telemetry.update();
         waitForStart();
 
-        while (opModeIsActive()) {
+      /*  while (opModeIsActive()) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -102,7 +109,26 @@ public class Red_Co_Op_1 extends OdometryAutonomous
                     telemetry.update();
                 }
             }
-        }
+        }*/
+
+          getSkystoneVars();
+          telemetry.addData("SkystoneX", SkystoneMiddleX);
+          telemetry.addData("SkystoneY", SkystoneMiddleY);
+          telemetry.update();
+
+      while (Math.abs(ScreenMiddleX-SkystoneMiddleX) > 100)
+      {
+          if(ScreenMiddleX-SkystoneMiddleX > 0)
+          {
+              strafe(.1, 90);
+          }
+          if(ScreenMiddleX-SkystoneMiddleX < 0)
+          {
+              strafe(.1, 270);
+          }
+          getSkystoneVars();
+      }
+      setPower0();
     }
 
     private void initVuforia() {
@@ -127,9 +153,28 @@ public class Red_Co_Op_1 extends OdometryAutonomous
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.5;
+        tfodParameters.minimumConfidence = 0.314159265354;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    public void getSkystoneVars()
+    {
+        if (tfod != null) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if(updatedRecognitions!=null) {
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel().equals("Skystone")) {
+                        SkystoneLeft = recognition.getLeft();
+                        SkystoneRight = recognition.getRight();
+                        SkystoneTop = recognition.getTop();
+                        SkystoneBottom = recognition.getBottom();
+                    }
+                }
+            }
+            SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
+            SkystoneMiddleY = (SkystoneBottom + SkystoneTop) / 2;
+        }
     }
 }
 
