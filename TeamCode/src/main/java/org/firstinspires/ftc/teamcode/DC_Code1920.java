@@ -231,14 +231,16 @@ public class DC_Code1920 extends OpMode
 
 
 
-        telemetry.addData("heading: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)  );
+     /*   telemetry.addData("heading: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)  );
         telemetry.addData("left stick angle", getLeftStickAngle());
         telemetry.addData("x", gamepad1.left_stick_x);
         telemetry.addData("y", -1 * gamepad1.left_stick_y);
         telemetry.addData("GO ANGLE", getLeftStickAngle()-getRobotAngle());
         telemetry.addData("Z", getRobotAngle());
-
-        telemetry.addData("towerHeight", towerHeight + " Inches");
+*/
+        telemetry.addData("towerHeight:", towerHeight + " Inches");
+        if(fieldCentric)telemetry.addData( "Mode:","Field-Centric");
+        else telemetry.addData( "Mode:","Robo-Centric");
 
 
     }
