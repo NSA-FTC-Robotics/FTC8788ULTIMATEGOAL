@@ -28,38 +28,18 @@ public class DC_Code1920 extends OpMode
     private DcMotor backRight;
     private DcMotor leftWheel;
     private DcMotor rightWheel;
-    private double dampener = 1;
     private Servo leftCollector;
     private Servo rightCollector;
     private Servo rightscorer;
     private Servo leftscorer;
     private Servo encoderlift;
 
-
-// tester
-    private int pulseLeftX ;
-    private int pulseRightX ;
-    private int pulseRightY ;
-    private double inchLeftX;
-    private double inchRightX;
-    private double inchRightY;
-    private final double pulseToInch = .0032639031;
-    private double lastRY = 0;
-    private double lastRX = 0;
-    private double lastLX = 0;
-    private double diffRY = 0;
-    private double diffRX = 0;
-    private double diffLX = 0;
-    private double dX = 0;
-    private double dY = 0;
-    private double dT = 0;
-    private double fieldX = 72;
-    private double fieldY = 72;
-    private double fieldT = 0;
-
     private double towerHeight = 1;
+    private double dampener = 1; // slows the robot down on command
     private boolean upPressed; //checks if the up/down button is unpressed before running method code again
     private boolean downPressed;
+    private double speed;
+    private double driveangle;
 
 
     BNO055IMU               imu;
@@ -79,14 +59,6 @@ public class DC_Code1920 extends OpMode
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         leftCollector.setPosition(1);
@@ -153,39 +125,24 @@ public class DC_Code1920 extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        /*dampener = 1-(0.7*(gamepad1.left_trigger));
-        if (gamepad1.dpad_up) {
-            frontLeft.setPower(1*dampener);
-            frontRight.setPower(1*dampener);
-            backLeft.setPower(1*dampener);
-            backRight.setPower(1*dampener);
-        } else if (gamepad1.dpad_down) {
-            frontLeft.setPower(-1*dampener);
-            frontRight.setPower(-1*dampener);
-            backLeft.setPower(-1*dampener);
-            backRight.setPower(-1*dampener);
-        } else if (gamepad1.dpad_left) {
-            frontLeft.setPower(-1*dampener);
-            frontRight.setPower(1*dampener);
-            backLeft.setPower(1*dampener);
-            backRight.setPower(-1*dampener);
-        } else if (gamepad1.dpad_right) {
-            frontLeft.setPower(1*dampener);
-            frontRight.setPower(-1*dampener);
-            backLeft.setPower(-1*dampener);
-            backRight.setPower(1*dampener);
-        } else {
-            frontLeft.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
-            frontRight.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
-            backLeft.setPower(((-gamepad1.left_stick_y - gamepad1.left_stick_x) + (gamepad1.right_stick_x))*dampener);
-            backRight.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x) - (gamepad1.right_stick_x))*dampener);
+        dampener = 1-(0.7*(gamepad1.left_trigger));
+        driveangle = (Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
+        speed = Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y);
+
+            frontLeft.setPower(Math.cos(driveangle)*dampener*speed);
+            frontRight.setPower(Math.sin(driveangle)*dampener*speed);
+            backLeft.setPower(Math.sin(driveangle)*dampener*speed);
+            backRight.setPower(Math.cos(driveangle)*dampener*speed);
 
 
-        }
 
-         */
 
-        strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
+
+
+       // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
+
+
+
 
     if(gamepad1.right_bumper)
     {
@@ -214,33 +171,7 @@ public class DC_Code1920 extends OpMode
             leftWheel.setPower(0);
             rightWheel.setPower(0);
         }
-        pulseRightY = frontRight.getCurrentPosition();
-        pulseRightX = backRight.getCurrentPosition();
-        pulseLeftX = frontLeft.getCurrentPosition();
 
-        inchRightY = pulseRightY * pulseToInch;
-        inchRightX = pulseRightX * pulseToInch * -1;
-        inchLeftX = pulseLeftX * pulseToInch * -1;
-
-        diffRY = inchRightY-lastRY;
-        diffRX= inchRightX-lastRX;
-        diffLX = inchLeftX-lastLX;
-
-        dX =(diffLX+ diffRX)/2;
-        dY = diffRY  + 16*dT/(2*Math.PI);
-        dT = (diffLX-diffRX)/14.5;
-
-
-        fieldX += (dX * Math.cos(fieldT) - dY * Math.sin(fieldT));
-        fieldY += (dX *Math.sin(fieldT) + dY * Math.cos(fieldT));
-        fieldT += dT;               // angle of robot
-
-        lastRY = inchRightY;
-        lastRX = inchRightX;
-        lastLX = inchLeftX;
-
-        if (fieldT >= 2*Math.PI) fieldT -= 2*Math.PI;
-        else if (fieldT<0) fieldT += 2*Math.PI;
 
 
         if (!gamepad2.dpad_up)
@@ -281,13 +212,6 @@ public class DC_Code1920 extends OpMode
             rightscorer.setPosition(.3);
         }
 
-
-
-       /* telemetry.addData("x coordinate: ", fieldX);
-        telemetry.addData("y coordinate: ", fieldY);
-        telemetry.addData("t coordinate: ", Math.toDegrees(fieldT)  );
-        telemetry.update();
-        telemetry.clear();*/
 
 
         telemetry.addData("heading: ", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES)  );
