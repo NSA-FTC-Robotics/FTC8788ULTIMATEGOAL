@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorController;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -36,6 +37,13 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private DcMotor intake1; //port 0
     private DcMotor intake2; //port 1
     private DcMotor passiveWinch; //port 2
+    private DcMotor activeWinch; //port 3
+
+    private Servo leftCollector;
+    private Servo rightCollector;
+    private Servo rightscorer;
+    private Servo leftscorer;
+    private Servo encoderlift;
 
     // original test odometry variables (ignore)
     private int pulseLeftX;
@@ -81,6 +89,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
+
+
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -114,15 +124,24 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
         intake1.setDirection(DcMotor.Direction.FORWARD);
@@ -132,6 +151,23 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        leftCollector = hardwareMap.get(Servo.class, "left_collector");
+        leftCollector.setPosition(1);
+
+        rightCollector = hardwareMap.get(Servo.class, "right_collector");
+        rightCollector.setPosition(0);
+
+        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
+        leftscorer.setPosition(0);
+
+        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
+        rightscorer.setPosition(1);
+
+        encoderlift = hardwareMap.get(Servo.class, "encoderlift");
+        encoderlift.setPosition(0.6);
+
+
 
         intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
