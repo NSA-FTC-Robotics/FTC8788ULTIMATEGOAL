@@ -114,13 +114,16 @@ public class Red_Co_Op_1 extends OdometryAutonomous
         }*/
 
           getSkystoneVars();
+        if(SkystoneMiddleX<427) SkystonePosition = 0;
+        if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
+        if(SkystoneMiddleX>852) SkystonePosition = 2;
+
           telemetry.addData("SkystoneX", SkystoneMiddleX);
           telemetry.addData("SkystoneY", SkystoneMiddleY);
+          telemetry.addData("Skystone Position",SkystonePosition);
           telemetry.update();
 
-          if(SkystoneMiddleX<427) SkystonePosition = 0;
-          if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
-          if(SkystoneMiddleX>852) SkystonePosition = 2;
+
 
 
 
