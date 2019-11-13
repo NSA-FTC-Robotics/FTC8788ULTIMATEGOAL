@@ -79,7 +79,7 @@ public class DC_Code1920 extends OpMode
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
 
-        fieldCentric = true;
+        fieldCentric = false;
         apressed = false;
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -129,37 +129,38 @@ public class DC_Code1920 extends OpMode
         telemetry.clear();
 
         dampener = 1 - (0.7 * (gamepad1.left_trigger));
-        driveangle = (Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
+        driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        telemetry.addData("DriveAngle", driveangle);
 
         if (fieldCentric)
         {
-            frontLeft.setPower(Math.cos(driveangle-getRobotAngle()) * dampener * speed);
-            frontRight.setPower(Math.sin(driveangle-getRobotAngle()) * dampener * speed);
-            backLeft.setPower(Math.sin(driveangle-getRobotAngle()) * dampener * speed);
-            backRight.setPower(Math.cos(driveangle-getRobotAngle()) * dampener * speed);
+            frontLeft.setPower((Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
+            frontRight.setPower((Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
+            backLeft.setPower((Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
+            backRight.setPower((Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
         }
         else
         {
-            frontLeft.setPower(Math.cos(driveangle)*dampener*speed);
-            frontRight.setPower(Math.sin(driveangle)*dampener*speed);
-            backLeft.setPower(Math.sin(driveangle)*dampener*speed);
-            backRight.setPower(Math.cos(driveangle)*dampener*speed);
+            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x);
+            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x);
+            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x);
+            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x);
         }
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
     if(gamepad1.right_bumper)
     {
         //collector in
-        leftCollector.setPosition(0.65);
-        rightCollector.setPosition(0.35);
+        leftCollector.setPosition(0.75);
+        rightCollector.setPosition(0.25);
 
     }
     else
     {
         //collector open
-        leftCollector.setPosition(0.45);
-        rightCollector.setPosition(0.55);
+        leftCollector.setPosition(0.6);
+        rightCollector.setPosition(0.4);
     }
 
     if(gamepad1.y)
