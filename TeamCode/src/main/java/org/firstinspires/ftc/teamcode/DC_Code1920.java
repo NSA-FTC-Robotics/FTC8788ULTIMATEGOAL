@@ -34,7 +34,7 @@ public class DC_Code1920 extends OpMode
     private Servo leftscorer;
     private Servo encoderlift;
 
-    private double towerHeight = 1;
+    private double towerHeight = 1; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
     private boolean upPressed; //checks if the up/down button is unpressed before running method code again
     private boolean downPressed;

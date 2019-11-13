@@ -36,9 +36,11 @@ public class Red_Co_Op_1 extends OdometryAutonomous
     private static final double ScreenSizeY = 720;
     private static final double ScreenMiddleX = ScreenSizeX/2;
     private static final double ScreenMiddleY = ScreenSizeY/2;
+    private int SkystonePosition;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
 
     double SkystoneLeft, SkystoneRight, SkystoneTop, SkystoneBottom;
     double SkystoneMiddleX, SkystoneMiddleY;
@@ -116,7 +118,14 @@ public class Red_Co_Op_1 extends OdometryAutonomous
           telemetry.addData("SkystoneY", SkystoneMiddleY);
           telemetry.update();
 
-      while (Math.abs(ScreenMiddleX-SkystoneMiddleX) > 100)
+          if(SkystoneMiddleX<427) SkystonePosition = 0;
+          if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
+          if(SkystoneMiddleX>852) SkystonePosition = 2;
+
+
+
+      /*
+          while (Math.abs(ScreenMiddleX-SkystoneMiddleX) > 100)
       {
           if(ScreenMiddleX-SkystoneMiddleX > 0)
           {
@@ -129,6 +138,9 @@ public class Red_Co_Op_1 extends OdometryAutonomous
           getSkystoneVars();
       }
       setPower0();
+
+       */
+
     }
 
     private void initVuforia() {
