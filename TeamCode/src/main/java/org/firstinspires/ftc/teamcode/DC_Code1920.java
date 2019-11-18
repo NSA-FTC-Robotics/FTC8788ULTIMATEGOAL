@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -28,13 +29,16 @@ public class DC_Code1920 extends OpMode
     private DcMotor backRight;
     private DcMotor leftWheel;
     private DcMotor rightWheel;
+    private DcMotor passiveWinch; //port 2
+    private DcMotor activeWinch; //port 3
     private Servo leftCollector;
     private Servo rightCollector;
-    private Servo rightscorer;
-    private Servo leftscorer;
+    private Servo outake;
+    private Servo orienter;
+    private Servo grabber;
     private Servo encoderlift;
 
-    private double towerHeight = 1; // tracks the height of the tower the robot is working on
+    private double towerHeight = 0; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
     private boolean upPressed; //checks if the up/down button is unpressed before running method code again
     private boolean downPressed;
@@ -42,6 +46,9 @@ public class DC_Code1920 extends OpMode
     private double speed;
     private double driveangle;
     private boolean fieldCentric;
+    private boolean winchMode;
+
+    private final double ticksPerLevel = 342.2467;
 
 
     BNO055IMU               imu;
@@ -62,19 +69,33 @@ public class DC_Code1920 extends OpMode
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
+        leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
+        leftWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+        rightWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
+        passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
+        activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        leftCollector.setPosition(1);
+        //leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        rightCollector.setPosition(0);
+        //rightCollector.setPosition(0);
 
-        leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
-        rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+        outake = hardwareMap.get(Servo.class, "outake");
+        outake.setPosition(0.8);
 
-        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
-        leftscorer.setPosition(0);
-        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
-        rightscorer.setPosition(1);
+        orienter = hardwareMap.get(Servo.class, "orienter");
+        orienter.setPosition(0.2);
+
+        grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
@@ -189,46 +210,79 @@ public class DC_Code1920 extends OpMode
     }
     if(!gamepad1.a)apressed=false;
 
+//Gamepad 2
+
 
 
         if (!gamepad2.dpad_up)
         {
             upPressed = true;
+
         }
         if (!gamepad2.dpad_down)
         {
             downPressed = true;
+
         }
 
         if (gamepad2.dpad_up)
         {
             incrementTower();
+
         }
         if (gamepad2.dpad_down)
         {
             decrementTower();
+
+        }
+        if (gamepad2.dpad_right)
+        {
+            //target = tower height
+            winchMode = true;
+        }
+        if (gamepad2.dpad_left)
+        {
+            //target = 1
+            winchMode = true;
+        }
+
+        if(Math.abs(gamepad2.right_stick_y)>0.05)
+        {
+            winchMode = false;
+            activeWinch.setPower(gamepad2.right_stick_y);
+            passiveWinch.setPower(gamepad2.right_stick_y);
+        }
+        if(winchMode)
+        {
+            activeWinch.setTargetPosition((int)((towerHeight)*ticksPerLevel));
         }
         if (gamepad2.x)
         {
-            towerHeight = 1.0;
+            towerHeight = 0;
+            winchMode = true;
         }
 
 
         if(gamepad2.right_bumper) {
-            leftscorer.setPosition(0.8);
-            rightscorer.setPosition(0.2);
+            outake.setPosition(0.1);
+            orienter.setPosition(0.2);
+        }
+        if(gamepad2.y)
+        {
+           outake.setPosition(0.25);
+            orienter.setPosition(0.6);
         }
 
         if(gamepad2.left_bumper)
         {
-            leftscorer.setPosition(0);
-            rightscorer.setPosition(1);
+            outake.setPosition(0.8);
+            orienter.setPosition(0.2);
         }
-        if(gamepad2.right_trigger>0.2)
-        {
-            leftscorer.setPosition(.7);
-            rightscorer.setPosition(.3);
-        }
+        if (gamepad2.a)
+            grabber.setPosition(0.3);
+        if (gamepad2.b)
+            grabber.setPosition(0);
+
 
 
 
@@ -294,15 +348,15 @@ public class DC_Code1920 extends OpMode
 
     public void incrementTower()
     {
-        towerHeight += 4;
+        towerHeight += 1;
         upPressed = false;
     }
 
     public void decrementTower()
     {
-        if (towerHeight >= 5)
+        if (towerHeight >= 1)
         {
-            towerHeight -= 4;
+            towerHeight -= 1;
         }
     }
 
