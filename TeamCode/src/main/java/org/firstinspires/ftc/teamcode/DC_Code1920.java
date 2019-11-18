@@ -255,6 +255,18 @@ public class DC_Code1920 extends OpMode
         if(winchMode)
         {
             activeWinch.setTargetPosition((int)((towerHeight)*ticksPerLevel));
+            double winchpower = (((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())/100)+(((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())%100)*0.01)+0.2);
+
+            if(activeWinch.getCurrentPosition()<activeWinch.getTargetPosition())
+            {
+                activeWinch.setPower(winchpower);
+                passiveWinch.setPower(winchpower);
+            }
+            if(activeWinch.getCurrentPosition()>activeWinch.getTargetPosition())
+            {
+                activeWinch.setPower(-winchpower);
+                passiveWinch.setPower(-winchpower);
+            }
         }
         if (gamepad2.x)
         {
