@@ -53,8 +53,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
     private Servo leftCollector;
     private Servo rightCollector;
-    private Servo rightscorer;
-    private Servo leftscorer;
+    private Servo outake;
+    private Servo orienter;
+    private Servo grabber;
     private Servo encoderlift;
 
     // original test odometry variables (ignore)
@@ -154,7 +155,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
         intake1.setDirection(DcMotor.Direction.FORWARD);
 
@@ -164,20 +164,27 @@ public abstract class OdometryAutonomous extends LinearOpMode
         passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
 
+        activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
+        activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
         rightCollector.setPosition(0);
 
-        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
-        leftscorer.setPosition(0);
+        outake = hardwareMap.get(Servo.class, "outake");
+        outake.setPosition(0.8);
 
-        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
-        rightscorer.setPosition(1);
+        orienter = hardwareMap.get(Servo.class, "orienter");
+        orienter.setPosition(0.2);
+
+        grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
-        encoderlift.setPosition(0.6);
+        encoderlift.setPosition(0.7); // needs testing
 
 
 
@@ -191,6 +198,18 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
 
     // sets initial coordinates of robot
+
+    public void openCollector()
+    {
+        rightCollector.setPosition(0.4);
+        sleep(50);
+        leftCollector.setPosition(0.6);
+    }
+    public void intakeCollector()
+    {
+        rightCollector.setPosition(.25);
+        leftCollector.setPosition(0.75);
+    }
     public void initCoords(double x, double y, double t)
     {
          fieldX = x;

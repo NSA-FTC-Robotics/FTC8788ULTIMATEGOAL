@@ -29,14 +29,14 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name = "Red Co-op 1")
-public class Red_Co_Op_1 extends OdometryAutonomous
+@Autonomous(name = "Red LZ!-SK1-SS-P")
+public class Red2_LZ2_SK2_SS_P extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
     private static final double ScreenMiddleX = ScreenSizeX/2;
     private static final double ScreenMiddleY = ScreenSizeY/2;
-    private int SkystonePosition;
+    private int SkystonePosition = 0;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -74,6 +74,8 @@ public class Red_Co_Op_1 extends OdometryAutonomous
 
     public void runOpMode()
     {
+        setConfig();
+        initCoords(120,8.75,0);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -89,60 +91,26 @@ public class Red_Co_Op_1 extends OdometryAutonomous
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+        while(!opModeIsActive())
+        {
+            getSkystoneVars();
+            if(SkystoneMiddleX<427) SkystonePosition = 0;
+            if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
+            if(SkystoneMiddleX>852) SkystonePosition = 2;
+            telemetry.addData("SkystoneX", SkystoneMiddleX);
+            telemetry.addData("SkystoneY", SkystoneMiddleY);
+            telemetry.addData("Skystone Position:",SkystonePosition);
+            telemetry.update();
+        }
         waitForStart();
+        openCollector();
+        driveToVector(120,50,0.5,0);
+        intakeCollector();
+        driveToVector(120,8.75,0.5,0);
+        openCollector();
+        waypointVector(96,8.75,0.5,1,0);
+        driveToVector(72,12,0.5,0);
 
-      /*  while (opModeIsActive()) {
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                    // step through the list of recognitions and display boundary info.
-                    int i = 0;
-                    for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                    }
-                    telemetry.update();
-                }
-            }
-        }*/
-
-          getSkystoneVars();
-        if(SkystoneMiddleX<427) SkystonePosition = 0;
-        if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
-        if(SkystoneMiddleX>852) SkystonePosition = 2;
-
-          telemetry.addData("SkystoneX", SkystoneMiddleX);
-          telemetry.addData("SkystoneY", SkystoneMiddleY);
-          telemetry.addData("Skystone Position",SkystonePosition);
-          telemetry.update();
-
-
-
-
-
-      /*
-          while (Math.abs(ScreenMiddleX-SkystoneMiddleX) > 100)
-      {
-          if(ScreenMiddleX-SkystoneMiddleX > 0)
-          {
-              strafe(.1, 90);
-          }
-          if(ScreenMiddleX-SkystoneMiddleX < 0)
-          {
-              strafe(.1, 270);
-          }
-          getSkystoneVars();
-      }
-      setPower0();
-
-       */
 
     }
 

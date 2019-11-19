@@ -246,16 +246,16 @@ public class DC_Code1920 extends OpMode
             winchMode = true;
         }
 
-        if(Math.abs(gamepad2.right_stick_y)>0.05)
-        {
+        //if(Math.abs(gamepad2.right_stick_y)>0.05)
+
             winchMode = false;
-            activeWinch.setPower(gamepad2.right_stick_y);
-            passiveWinch.setPower(gamepad2.right_stick_y);
-        }
-        if(winchMode)
+            activeWinch.setPower(gamepad2.right_stick_y*0.4);
+            passiveWinch.setPower(gamepad2.right_stick_y*0.4);
+
+       /* if(winchMode)
         {
             activeWinch.setTargetPosition((int)((towerHeight)*ticksPerLevel));
-            double winchpower = (((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())/100)+(((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())%100)*0.01)+0.2);
+            double winchpower = (0.5*((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())*0.01+0.2));
 
             if(activeWinch.getCurrentPosition()<activeWinch.getTargetPosition())
             {
@@ -268,6 +268,8 @@ public class DC_Code1920 extends OpMode
                 passiveWinch.setPower(-winchpower);
             }
         }
+
+        */
         if (gamepad2.x)
         {
             towerHeight = 0;
