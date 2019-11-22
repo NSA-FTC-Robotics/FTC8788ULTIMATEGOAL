@@ -19,6 +19,10 @@ public class IncrementalReadingTest extends LinearOpMode
     private DcMotor backLeft;
     private DcMotor frontRight;
     private DcMotor backRight;
+    private DcMotor intake1;
+    private DcMotor intake2;
+    private DcMotor passiveWinch;
+    private DcMotor activeWinch;
     private int pulseLeftX;
     private int pulseRightX;
     private int pulseRightY;
@@ -37,24 +41,44 @@ public class IncrementalReadingTest extends LinearOpMode
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake1 = hardwareMap.get(DcMotor.class, "Intake1");
+        intake1.setDirection(DcMotor.Direction.FORWARD);
 
+        intake2 = hardwareMap.get(DcMotor.class, "Intake2");
+        intake2.setDirection(DcMotor.Direction.FORWARD);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
+        passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
+        activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        passiveWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 
@@ -74,13 +98,13 @@ public class IncrementalReadingTest extends LinearOpMode
            {
 
 
-               pulseRightY = frontRight.getCurrentPosition();
-               pulseRightX = backRight.getCurrentPosition();
-               pulseLeftX = frontLeft.getCurrentPosition();
+               pulseRightY = passiveWinch.getCurrentPosition(); //passiveWich
+               pulseRightX = intake2.getCurrentPosition(); //intake 2
+               pulseLeftX = intake1.getCurrentPosition(); //intake1
 
                inchRightY = pulseRightY * pulseToInch;
                inchRightX = pulseRightX * pulseToInch * -1;
-               inchLeftX = pulseLeftX * pulseToInch * -1;
+               inchLeftX = pulseLeftX * pulseToInch ;
 
                diffRY = inchRightY-lastRY;
                diffRX= inchRightX-lastRX;

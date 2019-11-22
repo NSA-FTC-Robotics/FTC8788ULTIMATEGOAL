@@ -37,6 +37,7 @@ public class DC_Code1920 extends OpMode
     private Servo orienter;
     private Servo grabber;
     private Servo encoderlift;
+    private Servo capstonePlacer;
 
     private double towerHeight = 0; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
@@ -47,6 +48,7 @@ public class DC_Code1920 extends OpMode
     private double driveangle;
     private boolean fieldCentric;
     private boolean winchMode;
+    private boolean clawposition;
 
     private final double ticksPerLevel = 342.2467;
 
@@ -89,16 +91,19 @@ public class DC_Code1920 extends OpMode
         //rightCollector.setPosition(0);
 
         outake = hardwareMap.get(Servo.class, "outake");
-        outake.setPosition(0.8);
+        outake.setPosition(0.85);
 
         orienter = hardwareMap.get(Servo.class, "orienter");
-        orienter.setPosition(0.2);
+        orienter.setPosition(0.18);
 
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
+
+        capstonePlacer = hardwareMap.get(Servo.class, "capstonePlacer");
+        capstonePlacer.setPosition(1);
 
         fieldCentric = false;
         apressed = false;
@@ -163,10 +168,10 @@ public class DC_Code1920 extends OpMode
         }
         else
         {
-            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x);
-            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x);
-            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x);
-            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x);
+            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
+            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
+            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
+            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
         }
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
@@ -174,7 +179,7 @@ public class DC_Code1920 extends OpMode
     {
         //collector in
         leftCollector.setPosition(0.75);
-        rightCollector.setPosition(0.25);
+        rightCollector.setPosition(0.17);
 
     }
     else
@@ -184,6 +189,11 @@ public class DC_Code1920 extends OpMode
         rightCollector.setPosition(0.4);
     }
 
+    if(gamepad1.a&&gamepad1.left_bumper)
+    {
+        capstonePlacer.setPosition(0.62);
+    }
+    else capstonePlacer.setPosition(1);
     if(gamepad1.y)
     {
         leftWheel.setPower(1);
@@ -249,8 +259,8 @@ public class DC_Code1920 extends OpMode
         //if(Math.abs(gamepad2.right_stick_y)>0.05)
 
             winchMode = false;
-            activeWinch.setPower(gamepad2.right_stick_y*0.4);
-            passiveWinch.setPower(gamepad2.right_stick_y*0.4);
+            activeWinch.setPower(-gamepad2.right_stick_y*0.4);
+            passiveWinch.setPower(-gamepad2.right_stick_y*0.4);
 
        /* if(winchMode)
         {
@@ -278,8 +288,9 @@ public class DC_Code1920 extends OpMode
 
 
         if(gamepad2.right_bumper) {
-            outake.setPosition(0.1);
-            orienter.setPosition(0.2);
+            outake.setPosition(0.15);
+            orienter.setPosition(0.34);
+            clawposition = true;
         }
         if(gamepad2.y)
         {
@@ -289,9 +300,16 @@ public class DC_Code1920 extends OpMode
 
         if(gamepad2.left_bumper)
         {
-            outake.setPosition(0.8);
+            outake.setPosition(0.88);
             orienter.setPosition(0.2);
+            clawposition = false;
         }
+        if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper)
+        {
+            outake.setPosition(0.8);
+            orienter.setPosition(0.18);
+        }
+
         if (gamepad2.a)
             grabber.setPosition(0.3);
         if (gamepad2.b)

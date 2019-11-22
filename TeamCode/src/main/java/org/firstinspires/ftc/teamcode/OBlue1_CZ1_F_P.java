@@ -28,9 +28,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-
-@Autonomous(name = "Red LZ!-SK1-SS-P")
-public class Red2_LZ2_SK2_SS_P extends OdometryAutonomous
+@Disabled
+@Autonomous(name = "Blue CZ1-F-P")
+public class OBlue1_CZ1_F_P extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
@@ -75,7 +75,7 @@ public class Red2_LZ2_SK2_SS_P extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(120,8.75,0);
+        initCoords(24,8.75,0);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -104,11 +104,11 @@ public class Red2_LZ2_SK2_SS_P extends OdometryAutonomous
         }
         waitForStart();
         openCollector();
-        driveToVector(120,50,0.5,0);
+        driveToVector(24,50,0.5,0);
         intakeCollector();
-        driveToVector(120,8.75,0.5,0);
+        driveToVector(24,8.75,0.5,0);
         openCollector();
-        waypointVector(96,8.75,0.5,1,0);
+        waypointVector(48,8.75,0.5,1,0);
         driveToVector(72,12,0.5,0);
 
 

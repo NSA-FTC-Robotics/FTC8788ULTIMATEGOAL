@@ -29,8 +29,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name = "Red CZ1-F-P")
-public class Red1_CZ1_F_P extends OdometryAutonomous
+@Disabled
+@Autonomous(name = "Red LZ!-SK1-SS-P")
+public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
@@ -75,7 +76,7 @@ public class Red1_CZ1_F_P extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(120,8.75,0);
+        initCoords(33,8.75,270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -103,13 +104,25 @@ public class Red1_CZ1_F_P extends OdometryAutonomous
             telemetry.update();
         }
         waitForStart();
-        openCollector();
-        driveToVector(120,50,0.5,0);
         intakeCollector();
-        driveToVector(120,8.75,0.5,0);
-        openCollector();
-        waypointVector(96,8.75,0.5,1,0);
-        driveToVector(72,12,0.5,0);
+        //intake()
+        if(SkystonePosition == 2)
+        {
+            waypointVector(12,36,0.5,1,315);
+            waypointVector(12,44,0.5,0.25,315);
+            waypointVector(12,36,0.5,1,315);
+        }
+        else if(SkystonePosition ==1)
+        {
+            driveToVector(20,36,0.5,315);
+
+        }
+        else
+        {
+            driveToVector(28,36,0.5,315);
+        }
+        waypointVector(96,36,1,1,270);
+        driveToVector(96,56,0.5,270);
 
 
     }

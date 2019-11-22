@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -103,6 +105,11 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
 
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
+    double                  globalAngle, power = .30, correction;
+
+
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -161,12 +168,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake2 = hardwareMap.get(DcMotor.class, "Intake2");
         intake2.setDirection(DcMotor.Direction.FORWARD);
 
-        passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
 
         activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
         activeWinch.setDirection(DcMotor.Direction.FORWARD);
-        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         leftCollector.setPosition(1);
@@ -195,6 +202,35 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
+        telemetry.addData("Mode", "calibrating...");
+        telemetry.update();
+
+        // make sure the imu gyro is calibrated before continuing.
+        while (!imu.isGyroCalibrated())
+        {
+
+        }
+
+
     }
 
     // sets initial coordinates of robot
@@ -239,7 +275,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         inchRightY = pulseRightY * pulseToInch;
         inchRightX = pulseRightX * pulseToInch * -1;
-        inchLeftX = pulseLeftX * pulseToInch * -1;
+        inchLeftX = pulseLeftX * pulseToInch ;
 
         diffRY = inchRightY-lastRY;
         diffRX= inchRightX-lastRX;
@@ -413,7 +449,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // strafes robot to fix current path to x/y point (strafe component of mvmt)
     public void alterTragectory(double direction)
     {
-        direction = 90 - direction;
+        //direction = 90 - direction;
         direction = Math.toRadians(direction);
         direction = fieldT+direction;
         double x = Math.cos(direction);
