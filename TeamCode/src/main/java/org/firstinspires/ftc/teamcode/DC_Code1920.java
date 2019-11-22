@@ -300,7 +300,7 @@ public class DC_Code1920 extends OpMode
 
         if(gamepad2.left_bumper)
         {
-            outake.setPosition(0.88);
+            outake.setPosition(0.9);
             orienter.setPosition(0.2);
             clawposition = false;
         }

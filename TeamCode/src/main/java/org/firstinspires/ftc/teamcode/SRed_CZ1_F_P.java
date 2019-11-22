@@ -29,8 +29,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Disabled
-@Autonomous(name = "Red LZ!-SK1-SS-P")
+
+@Autonomous(name = "Red LZ1-SK1-SS-P")
 public class SRed_CZ1_F_P extends SimpleAutonomous
 {
     private static final double ScreenSizeX = 1280;
@@ -103,8 +103,14 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
             telemetry.update();
         }
         waitForStart();
-        intakeCollector();
-        //intake()
+        openCollector();
+        suction();
+        sleep(5000);
+        stopCollector();
+        sleep(5000);
+        spit();
+        sleep(6000);
+        //translate(0,5,0.1);
         if(SkystonePosition == 2)
         {
 

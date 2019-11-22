@@ -180,17 +180,22 @@ public abstract class SimpleAutonomous extends LinearOpMode
         return -1 * angles.firstAngle;
     }
 
-
-    public void strafe(double power, double direction)
+    public void suction ()
     {
-        direction = Math.toRadians(direction)- Math.PI/4;
-
-        frontLeft.setPower(Math.cos(direction));
-        frontRight.setPower(Math.sin(direction));
-        backLeft.setPower(Math.sin(direction));
-        backRight.setPower(Math.cos(direction));
+        intake1.setPower(-0.3);
+        intake2.setPower(0.3);
     }
 
+    public void stopCollector()
+    {
+        intake1.setPower(0);
+        intake2.setPower(0);
+    }
+    public void spit()
+    {
+        intake1.setPower(0.3);
+        intake2.setPower(-0.3);
+    }
     // turns the robots to targetTheta angle
     public void setTheta(double targetTheta, double power)     //degrees input
     {
@@ -238,43 +243,46 @@ public abstract class SimpleAutonomous extends LinearOpMode
         double blpower = power;
         double brpower = power;
         double direction = Math.atan2(y,x)-Math.PI/4;
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int targetPosition = (int)(Math.hypot(x,y) * TicksPerInches);
         frontLeft.setTargetPosition((int)(targetPosition*Math.cos(direction)));
         frontRight.setTargetPosition((int)(targetPosition*Math.sin(direction)));
         backLeft.setTargetPosition((int)(targetPosition*Math.sin(direction)));
         backRight.setTargetPosition((int)(targetPosition*Math.cos(direction)));
-
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while(frontLeft.isBusy()||frontRight.isBusy()||backRight.isBusy()||backLeft.isBusy())
         {
             if(frontLeft.isBusy())
             {
-                if(Math.abs(frontLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
-                frontLeft.setPower(flpower);
+               // if(Math.abs(frontLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
+                frontLeft.setPower(power);
             }
             else frontLeft.setPower(0);
             if(frontRight.isBusy())
             {
-                if(Math.abs(frontRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontRight.getCurrentPosition()-targetPosition))/1000) +0.15;
-                frontRight.setPower(flpower);
+                //if(Math.abs(frontRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontRight.getCurrentPosition()-targetPosition))/1000) +0.15;
+                frontRight.setPower(power);
             }
             else frontRight.setPower(0);
             if(backLeft.isBusy())
             {
-                if(Math.abs(backLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
-                backLeft.setPower(flpower);
+               // if(Math.abs(backLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
+                backLeft.setPower(power);
             }
             else backLeft.setPower(0);
             if(backRight.isBusy())
             {
-                if(Math.abs(backRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backRight.getCurrentPosition()-targetPosition))/1000) +0.15;
-                backRight.setPower(flpower);
+               // if(Math.abs(backRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backRight.getCurrentPosition()-targetPosition))/1000) +0.15;
+                backRight.setPower(power);
             }
             else backRight.setPower(0);
         }
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     private void initVuforia() {
         /*
