@@ -30,8 +30,8 @@ import java.util.List;
 
 
 
-@Autonomous(name = "Red LZ2-SK1-P")
-public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
+@Autonomous(name = "Blue_LZ1_SS1_SS2_P")
+public class OBlue_LZ1_SS1_SS2_P extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
@@ -77,7 +77,7 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(8.75,39 ,270);
+        initCoords(8.75,135.5 ,270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -96,9 +96,9 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         while(!opModeIsActive())
         {
             getSkystoneVars();
-            if(SkystoneMiddleX<400) SkystonePosition = 0;
-            if(SkystoneMiddleX>=400&&SkystoneMiddleX<=600) SkystonePosition = 1;
-            if(SkystoneMiddleX>600) SkystonePosition = 2;
+            if(SkystoneMiddleX<500) SkystonePosition = 0;
+            if(SkystoneMiddleX>=500&&SkystoneMiddleX<=700) SkystonePosition = 1;
+            if(SkystoneMiddleX>700) SkystonePosition = 2;
             telemetry.addData("SkystoneX", SkystoneMiddleX);
             telemetry.addData("SkystoneY", SkystoneMiddleY);
             telemetry.addData("Skystone Position:",SkystonePosition);
@@ -110,30 +110,30 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         suction();
         if(FinalSystonePosition==0)
         {
-            driveToVector(36,28,0.8,0);
-            driveToVector(42,28,0.8,0);
+            driveToVector(36,100,0.8,0);
+            driveToVector(42,100,0.8,0);
 
             //stopCollector();
-            driveToVector(32,28,0.8,0);
+            driveToVector(32,100,0.8,0);
         }
         else if(FinalSystonePosition==1)
         {
-            driveToVector(30,36.5,0.8,0);
-            driveToVector(42,36.5,0.8,0);
-           // stopCollector();
-            driveToVector(30,36.5,0.8,0);
+            driveToVector(30,108.5,0.8,0);
+            driveToVector(42,108.5,0.8,0);
+            // stopCollector();
+            driveToVector(30,108.5,0.8,0);
         }
         else
         {
-            driveToVector(36,44,0.8,0);
-            driveToVector(42,44,0.8,0);
-           // stopCollector();
-            driveToVector(32,44,0.8,0);
+            driveToVector(36,116,0.8,0);
+            driveToVector(42,116,0.8,0);
+            // stopCollector();
+            driveToVector(32,116,0.8,0);
         }
-        driveToVector(30,76,1,90);
+        driveToVector(30,68,1,270);
         spit();
         sleep(2000);
-        if(FinalSystonePosition!=0)
+        /*if(FinalSystonePosition!=0)
         {
             driveToVector(30,30,1,90);
             suction();
@@ -151,6 +151,8 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
             spit();
             driveToVector(30, 70, 0.8, 90);
         }
+
+         */
 
 
     }

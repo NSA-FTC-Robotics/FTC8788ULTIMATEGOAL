@@ -629,8 +629,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void spit()
     {
-        intake1.setPower(0.3);
-        intake2.setPower(-0.3);
+        intake1.setPower(0.5);
+        intake2.setPower(-0.5);
     }
-
 }
