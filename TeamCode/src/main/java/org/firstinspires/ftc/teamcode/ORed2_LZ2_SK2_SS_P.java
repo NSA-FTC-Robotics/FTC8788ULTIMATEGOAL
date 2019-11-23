@@ -112,21 +112,21 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         {
             driveToVector(36,28,0.8,0);
             driveToVector(42,28,0.8,0);
-            stopCollector();
+            //stopCollector();
             driveToVector(32,28,0.8,0);
         }
         else if(FinalSystonePosition==1)
         {
             driveToVector(36,36,0.8,0);
             driveToVector(42,36,0.8,0);
-            stopCollector();
+           // stopCollector();
             driveToVector(32,36,0.8,0);
         }
         else
         {
             driveToVector(36,44,0.8,0);
             driveToVector(42,44,0.8,0);
-            stopCollector();
+           // stopCollector();
             driveToVector(32,44,0.8,0);
         }
         driveToVector(30,76,1,90);
@@ -141,6 +141,8 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         else if(FinalSystonePosition==1)
         {
             driveToVector(36,12,0.8,0);
+
+
             driveToVector(42,12,0.8,0);
             stopCollector();
             driveToVector(32,12,0.8,0);
@@ -152,6 +154,7 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         }
         driveToVector(30,76,1,90);
         spit();
+        driveToVector(30,70,0.8,90);
 
 
 
