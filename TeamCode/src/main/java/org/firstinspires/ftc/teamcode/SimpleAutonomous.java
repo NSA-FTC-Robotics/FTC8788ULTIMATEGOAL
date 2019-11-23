@@ -4,18 +4,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.DcMotorController;
-//import com.qualcomm.robotcore.hardware.DcMotorSimple;
-//import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -106,23 +108,20 @@ public abstract class SimpleAutonomous extends LinearOpMode
     public void setConfig()
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
@@ -200,6 +199,7 @@ public abstract class SimpleAutonomous extends LinearOpMode
     public void setTheta(double targetTheta, double power)     //degrees input
     {
         double t = Math.toRadians(getRobotAngle());
+        telemetry.addData("t: ", t);
         while(Math.abs(targetTheta-t)>0.2)
         {
            if(Math.abs(targetTheta-t)<10)
@@ -236,53 +236,19 @@ public abstract class SimpleAutonomous extends LinearOpMode
             }
         }
     }
-    public void translate(double x, double y, double power)
+    public void translate(double direction, double power, int time)
     {
-        double flpower = power;
-        double frpower = power;
-        double blpower = power;
-        double brpower = power;
-        double direction = Math.atan2(y,x)-Math.PI/4;
-        int targetPosition = (int)(Math.hypot(x,y) * TicksPerInches);
-        frontLeft.setTargetPosition((int)(targetPosition*Math.cos(direction)));
-        frontRight.setTargetPosition((int)(targetPosition*Math.sin(direction)));
-        backLeft.setTargetPosition((int)(targetPosition*Math.sin(direction)));
-        backRight.setTargetPosition((int)(targetPosition*Math.cos(direction)));
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(frontLeft.isBusy()||frontRight.isBusy()||backRight.isBusy()||backLeft.isBusy())
-        {
-            if(frontLeft.isBusy())
-            {
-               // if(Math.abs(frontLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
-                frontLeft.setPower(power);
-            }
-            else frontLeft.setPower(0);
-            if(frontRight.isBusy())
-            {
-                //if(Math.abs(frontRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(frontRight.getCurrentPosition()-targetPosition))/1000) +0.15;
-                frontRight.setPower(power);
-            }
-            else frontRight.setPower(0);
-            if(backLeft.isBusy())
-            {
-               // if(Math.abs(backLeft.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backLeft.getCurrentPosition()-targetPosition))/1000) +0.15;
-                backLeft.setPower(power);
-            }
-            else backLeft.setPower(0);
-            if(backRight.isBusy())
-            {
-               // if(Math.abs(backRight.getCurrentPosition()-targetPosition)<1000) flpower = (0.85 *(Math.abs(backRight.getCurrentPosition()-targetPosition))/1000) +0.15;
-                backRight.setPower(power);
-            }
-            else backRight.setPower(0);
-        }
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double driveangle = Math.toRadians(-direction)+Math.PI/4;
+        frontLeft.setPower(Math.cos(driveangle)*power);
+        frontRight.setPower(Math.sin(driveangle)*power);
+        backLeft.setPower(Math.sin(driveangle)*power);
+        backRight.setPower(Math.cos(driveangle)*power);
+        sleep(time);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
     }
     private void initVuforia() {
         /*

@@ -41,17 +41,17 @@ public class IncrementalReadingTest extends LinearOpMode
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
@@ -102,7 +102,7 @@ public class IncrementalReadingTest extends LinearOpMode
                pulseRightX = intake2.getCurrentPosition(); //intake 2
                pulseLeftX = intake1.getCurrentPosition(); //intake1
 
-               inchRightY = pulseRightY * pulseToInch;
+               inchRightY = pulseRightY * pulseToInch *-1;
                inchRightX = pulseRightX * pulseToInch * -1;
                inchLeftX = pulseLeftX * pulseToInch ;
 

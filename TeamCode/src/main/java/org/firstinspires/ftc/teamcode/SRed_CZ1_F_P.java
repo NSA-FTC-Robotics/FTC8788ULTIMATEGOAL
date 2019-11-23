@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -19,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -31,8 +34,10 @@ import java.util.List;
 
 
 @Autonomous(name = "Red LZ1-SK1-SS-P")
+
 public class SRed_CZ1_F_P extends SimpleAutonomous
 {
+
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
     private static final double ScreenMiddleX = ScreenSizeX/2;
@@ -45,7 +50,9 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
 
     double SkystoneLeft, SkystoneRight, SkystoneTop, SkystoneBottom;
     double SkystoneMiddleX, SkystoneMiddleY;
-
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
+    double                  globalAngle, power = .30, correction;
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -103,14 +110,10 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
             telemetry.update();
         }
         waitForStart();
-        openCollector();
-        suction();
-        sleep(5000);
-        stopCollector();
-        sleep(5000);
-        spit();
-        sleep(6000);
-        //translate(0,5,0.1);
+       // openCollector();
+        //suction();
+        translate(90,.5,800);
+        setTheta(90,0.5);
         if(SkystonePosition == 2)
         {
 

@@ -29,8 +29,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Disabled
-@Autonomous(name = "Red LZ!-SK1-SS-P")
+
+@Autonomous(name = "Red LZ2-SK1-P")
 public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
@@ -38,6 +38,7 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
     private static final double ScreenMiddleX = ScreenSizeX/2;
     private static final double ScreenMiddleY = ScreenSizeY/2;
     private int SkystonePosition = 0;
+    private int FinalSystonePosition;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -76,7 +77,7 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(33,8.75,270);
+        initCoords(8.75,39 ,270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -95,34 +96,63 @@ public class ORed2_LZ2_SK2_SS_P extends OdometryAutonomous
         while(!opModeIsActive())
         {
             getSkystoneVars();
-            if(SkystoneMiddleX<427) SkystonePosition = 0;
-            if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
-            if(SkystoneMiddleX>852) SkystonePosition = 2;
+            if(SkystoneMiddleX<400) SkystonePosition = 0;
+            if(SkystoneMiddleX>=400&&SkystoneMiddleX<=700) SkystonePosition = 1;
+            if(SkystoneMiddleX>700) SkystonePosition = 2;
             telemetry.addData("SkystoneX", SkystoneMiddleX);
             telemetry.addData("SkystoneY", SkystoneMiddleY);
             telemetry.addData("Skystone Position:",SkystonePosition);
             telemetry.update();
         }
         waitForStart();
-        intakeCollector();
-        //intake()
-        if(SkystonePosition == 2)
+        FinalSystonePosition = SkystonePosition;
+        openCollector();
+        suction();
+        if(FinalSystonePosition==0)
         {
-            waypointVector(12,36,0.5,1,315);
-            waypointVector(12,44,0.5,0.25,315);
-            waypointVector(12,36,0.5,1,315);
+            driveToVector(36,28,0.8,0);
+            driveToVector(42,28,0.8,0);
+            stopCollector();
+            driveToVector(32,28,0.8,0);
         }
-        else if(SkystonePosition ==1)
+        else if(FinalSystonePosition==1)
         {
-            driveToVector(20,36,0.5,315);
-
+            driveToVector(36,36,0.8,0);
+            driveToVector(42,36,0.8,0);
+            stopCollector();
+            driveToVector(32,36,0.8,0);
         }
         else
         {
-            driveToVector(28,36,0.5,315);
+            driveToVector(36,44,0.8,0);
+            driveToVector(42,44,0.8,0);
+            stopCollector();
+            driveToVector(32,44,0.8,0);
         }
-        waypointVector(96,36,1,1,270);
-        driveToVector(96,56,0.5,270);
+        driveToVector(30,76,1,90);
+        spit();
+        driveToVector(30,30,1,90);
+        suction();
+        if(FinalSystonePosition==0)
+        {
+            driveToVector(36,28,0.8,0);
+
+        }
+        else if(FinalSystonePosition==1)
+        {
+            driveToVector(36,12,0.8,0);
+            driveToVector(42,12,0.8,0);
+            stopCollector();
+            driveToVector(32,12,0.8,0);
+        }
+        else
+        {
+            driveToVector(36,44,0.8,0);
+
+        }
+        driveToVector(30,76,1,90);
+        spit();
+
 
 
     }

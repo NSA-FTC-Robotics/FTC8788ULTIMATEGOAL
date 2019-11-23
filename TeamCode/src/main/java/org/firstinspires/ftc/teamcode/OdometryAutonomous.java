@@ -144,22 +144,22 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
@@ -273,7 +273,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         pulseRightX = intake2.getCurrentPosition(); //intake 2
         pulseLeftX = intake1.getCurrentPosition(); //intake1
 
-        inchRightY = pulseRightY * pulseToInch;
+        inchRightY = pulseRightY * pulseToInch *-1;
         inchRightX = pulseRightX * pulseToInch * -1;
         inchLeftX = pulseLeftX * pulseToInch ;
 
@@ -449,7 +449,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // strafes robot to fix current path to x/y point (strafe component of mvmt)
     public void alterTragectory(double direction)
     {
-        //direction = 90 - direction;
+        direction = 90 - direction;
         direction = Math.toRadians(direction);
         direction = fieldT+direction;
         double x = Math.cos(direction);
@@ -469,14 +469,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double da = 1;
 
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance >.5)
+            while (distance >1)
             {
-                while (distance >.1) {
+                while (distance >.9) {
                     distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                     if (distance < 30) da = 0.4;
                     if (distance < 10)
                     {
-                        da = 0.25;
+                        //da = 0.25;
                         if( power>0.5)
                             power=0.4;
                     }
@@ -511,14 +511,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >.5)
+        while (distance >1)
         {
-            while (distance >.1) {
+            while (distance >.9) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                if (distance < 30) da = 0.4;
+                if (distance < 30) da = 0.5;
                 if (distance < 10)
                 {
-                    da = 0.25;
+                   da = 0.4;
                     if( power>0.5)
                         power=0.4;
                 }
@@ -616,4 +616,21 @@ public abstract class OdometryAutonomous extends LinearOpMode
         backLeft.setPower(0);
         backRight.setPower(0);
     }
+    public void suction ()
+    {
+        intake1.setPower(-0.3);
+        intake2.setPower(0.3);
+    }
+
+    public void stopCollector()
+    {
+        intake1.setPower(0);
+        intake2.setPower(0);
+    }
+    public void spit()
+    {
+        intake1.setPower(0.3);
+        intake2.setPower(-0.3);
+    }
+
 }
