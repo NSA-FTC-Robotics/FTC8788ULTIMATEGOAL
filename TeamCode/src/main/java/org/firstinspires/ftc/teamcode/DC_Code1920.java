@@ -150,7 +150,7 @@ public class DC_Code1920 extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        dampener = 1 - (0.7 * (gamepad1.left_trigger));
+        dampener = 1 - (0.5 * (gamepad1.left_trigger));
         driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         telemetry.addData("DriveAngle", driveangle);
