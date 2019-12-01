@@ -108,54 +108,100 @@ public class Red_Skystone2 extends OdometryAutonomous
         while(opModeIsActive()&& !isStopRequested()) {
             FinalSystonePosition = SkystonePosition;
             openCollector();
+            suction();
 
             if (FinalSystonePosition == 0)
             {
+                waypointVector(30,20,0.4,1.5,330);
+                driveToVector(42,16,0.8,330);
+                intakeCollector();
+                waypointVector(30,20,0.6,4,330);
+
+                /*
                 driveToVector(30, 28, 0.8, 0);
                 driveToVector(38, 28, 0.8, 0);
                 suction();
                 driveToVector(54, 28, 0.8, 0);
                 driveToVector(30, 28, 0.8, 0);
+
+                 */
             }
             else if (FinalSystonePosition == 1)
             {
+                driveToVector(30,28,0.8,315);
+               /*
                 driveToVector(30, 36, 0.8, 0);
                 driveToVector(38, 36, 0.8, 0);
                 suction();
                 driveToVector(54, 36, 0.8, 0);
                 driveToVector(30, 36, 0.8, 0);
+
+                */
             }
             else
                 {
-                    waypointVector(30, 44, 0.8, 1.5,0);
+
+                    driveToVector(30,36,1,315);
+
+                    /*waypointVector(30, 44, 0.8, 1.5,0);
                     //driveToVector(38, 44, 0.8, 0);
                     suction();
                     waypointVector(50, 44, 0.8, 1.5,0);
                     waypointVector(30, 44, 0.6, 1.5,0);
-            }
-            driveToVector(36, 108, 1, 270);
-            sleep(2000);
-            openCollector();
-            if (FinalSystonePosition != 0) {
-                driveToVector(30, 30, 1, 270);
-                if (FinalSystonePosition == 1) {
-                    driveToVector(30, 12, 0.8, 0);
-                    driveToVector(38, 12, 0.8, 0);
-                    suction();
-                    driveToVector(54, 12, 0.8, 0);
-                    driveToVector(30, 12, 0.8, 0);
-                } else {
-                    driveToVector(30, 20, 0.8, 0);
-                    driveToVector(38, 20, 0.8, 0);
-                    suction();
-                    driveToVector(54, 20, 0.8, 0);
-                    driveToVector(30, 20, 0.8, 0);
 
-                }
-                driveToVector(36, 108, 1, 270);
+                     */
             }
+            waypointVector(36,70,1,6,270);
+            openCollector();
+           driveToVector(36, 108, 1, 270);
+           sleep(1000);
+            waypointVector(36,70,1,6,270);
+
+            if (FinalSystonePosition == 0)
+            {
+                waypointVector(30,44,0.4,1.5,315);
+                driveToVector(42,40,0.8,315);
+                intakeCollector();
+                waypointVector(30,44,0.6,4,315);
+
+                /*
+                driveToVector(30, 28, 0.8, 0);
+                driveToVector(38, 28, 0.8, 0);
+                suction();
+                driveToVector(54, 28, 0.8, 0);
+                driveToVector(30, 28, 0.8, 0);
+
+                 */
+            }
+            else if (FinalSystonePosition == 1)
+            {
+                driveToVector(30,28,0.8,315);
+               /*
+                driveToVector(30, 36, 0.8, 0);
+                driveToVector(38, 36, 0.8, 0);
+                suction();
+                driveToVector(54, 36, 0.8, 0);
+                driveToVector(30, 36, 0.8, 0);
+
+                */
+            }
+            else
+            {
+
+                driveToVector(30,36,1,315);
+
+                    /*waypointVector(30, 44, 0.8, 1.5,0);
+                    //driveToVector(38, 44, 0.8, 0);
+                    suction();
+                    waypointVector(50, 44, 0.8, 1.5,0);
+                    waypointVector(30, 44, 0.6, 1.5,0);
+
+                     */
+            }
+            waypointVector(36,70,1,2,270);
+            driveToVector(36, 108, 1, 270);
             driveToVector(36,72,1,270);
-            sleep(100000);
+            stop();
         }
 
     }

@@ -212,8 +212,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void intakeCollector()
     {
-        rightCollector.setPosition(.4);
-        leftCollector.setPosition(0.6);
+        leftCollector.setPosition(0.75);
+        rightCollector.setPosition(0.17);
     }
 
     public void initCoords(double x, double y, double t)
