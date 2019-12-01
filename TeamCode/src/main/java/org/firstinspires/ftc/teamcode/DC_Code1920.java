@@ -288,7 +288,7 @@ public class DC_Code1920 extends OpMode
             orienter.setPosition(0.34);
             clawposition = true;
         }
-        if(gamepad2.y)
+        if(gamepad2.y) // alternate scoring position
         {
            outake.setPosition(0.25);
             orienter.setPosition(0.6);

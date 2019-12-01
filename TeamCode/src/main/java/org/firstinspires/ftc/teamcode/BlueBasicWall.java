@@ -9,23 +9,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-@Autonomous(name = "Test Odometry")
-//@Disabled
-public class TestOdometry extends OdometryAutonomous
-{
-@Override
-    public void runOpMode() throws InterruptedException
-    {
 
+import org.firstinspires.ftc.teamcode.OdometryAutonomous;
+
+@Autonomous(name = "CBBW")
+//@Disabled
+public class BlueBasicWall extends OdometryAutonomous
+{
+    @Override
+    public void runOpMode()
+    {
         setConfig();
-       initCoords(12,12,0);
+        initCoords(12,60,90);
         waitForStart();
-        while (opModeIsActive()&& !isStopRequested())
+        if (opModeIsActive())
         {
 
-            driveTo(24,24,0.6);
-            setTheta(0,0.4);
+            driveTo(12,72,0.8);
+
         }
-        idle();
     }
 }

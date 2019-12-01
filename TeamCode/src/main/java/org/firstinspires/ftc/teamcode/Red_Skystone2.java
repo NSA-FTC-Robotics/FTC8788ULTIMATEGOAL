@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -21,7 +19,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -33,16 +30,15 @@ import java.util.List;
 
 
 
-@Autonomous(name = "Red LZ1-SK1-SS-P")
-
-public class SRed_CZ1_F_P extends SimpleAutonomous
+@Autonomous(name = "Red Skystone 2")
+public class Red_Skystone2 extends OdometryAutonomous
 {
-
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
     private static final double ScreenMiddleX = ScreenSizeX/2;
     private static final double ScreenMiddleY = ScreenSizeY/2;
     private int SkystonePosition = 0;
+    private int FinalSystonePosition;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -50,9 +46,7 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
 
     double SkystoneLeft, SkystoneRight, SkystoneTop, SkystoneBottom;
     double SkystoneMiddleX, SkystoneMiddleY;
-    BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
-    double                  globalAngle, power = .30, correction;
+
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -83,6 +77,7 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
     public void runOpMode()
     {
         setConfig();
+        initCoords(8.75,135.5 ,270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -98,37 +93,76 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-        while(!opModeIsActive())
+        while(!opModeIsActive() && !isStopRequested())
         {
             getSkystoneVars();
-            if(SkystoneMiddleX<427) SkystonePosition = 0;
-            if(SkystoneMiddleX>=427&&SkystoneMiddleX<=853) SkystonePosition = 1;
-            if(SkystoneMiddleX>852) SkystonePosition = 2;
+            if(SkystoneMiddleX<500) SkystonePosition = 0;
+            if(SkystoneMiddleX>=500&&SkystoneMiddleX<=700) SkystonePosition = 1;
+            if(SkystoneMiddleX>700) SkystonePosition = 2;
             telemetry.addData("SkystoneX", SkystoneMiddleX);
             telemetry.addData("SkystoneY", SkystoneMiddleY);
             telemetry.addData("Skystone Position:",SkystonePosition);
             telemetry.update();
         }
         waitForStart();
-       // openCollector();
-        //suction();
-        translate(90,.5,800);
-        setTheta(90,0.5);
-        if(SkystonePosition == 2)
-        {
+        while(opModeIsActive()&& !isStopRequested()) {
+            FinalSystonePosition = SkystonePosition;
+            openCollector();
 
+            if (FinalSystonePosition == 0) {
+                driveToVector(30, 100, 0.8, 0);
+                leftspin();
+                driveToVector(38, 100, 0.8, 0);
+                suction();
+                driveToVector(54, 100, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 100, 0.8, 0);
+            } else if (FinalSystonePosition == 1) {
+                driveToVector(30, 112, 0.8, 0);
+                leftspin();
+                driveToVector(38, 112, 0.8, 0);
+                suction();
+                driveToVector(54, 112, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 112, 0.8, 0);
+            } else {
+                driveToVector(30, 124, 0.8, 0);
+                leftspin();
+                driveToVector(38, 124, 0.8, 0);
+                suction();
+                driveToVector(54, 124, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 124, 0.8, 0);
+
+            }
+            driveToVector(30, 68, 1, 270);
+            spit();
+            sleep(2000);
+            openCollector();
+            if (FinalSystonePosition != 0) {
+                driveToVector(30, 30, 1, 90);
+
+                if (FinalSystonePosition == 1) {
+                    driveToVector(30, 12, 0.8, 0);
+                    driveToVector(38, 12, 0.8, 0);
+                    suction();
+                    driveToVector(54, 12, 0.8, 0);
+                    intakeCollector();
+                    driveToVector(30, 12, 0.8, 0);
+                } else {
+                    driveToVector(30, 20, 0.8, 0);
+                    driveToVector(38, 20, 0.8, 0);
+                    suction();
+                    driveToVector(54, 20, 0.8, 0);
+                    intakeCollector();
+                    driveToVector(30, 20, 0.8, 0);
+
+                }
+                driveToVector(30, 30, 1, 270);
+                spit();
+                driveToVector(30, 70, 0.8, 90);
+            }
         }
-        else if(SkystonePosition ==1)
-        {
-
-
-        }
-        else
-        {
-
-        }
-
-
 
     }
 
@@ -154,7 +188,7 @@ public class SRed_CZ1_F_P extends SimpleAutonomous
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.314159265354;
+        tfodParameters.minimumConfidence = 0.5;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

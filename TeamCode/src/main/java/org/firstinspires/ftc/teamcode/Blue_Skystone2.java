@@ -30,8 +30,8 @@ import java.util.List;
 
 
 
-@Autonomous(name = "Blue_LZ1_SS1_SS2_P")
-public class OBlue_LZ1_SS1_SS2_P extends OdometryAutonomous
+@Autonomous(name = "Blue Skystone 2")
+public class Blue_Skystone2 extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
@@ -93,7 +93,7 @@ public class OBlue_LZ1_SS1_SS2_P extends OdometryAutonomous
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-        while(!opModeIsActive())
+        while(!opModeIsActive() && !isStopRequested())
         {
             getSkystoneVars();
             if(SkystoneMiddleX<500) SkystonePosition = 0;
@@ -105,55 +105,64 @@ public class OBlue_LZ1_SS1_SS2_P extends OdometryAutonomous
             telemetry.update();
         }
         waitForStart();
-        FinalSystonePosition = SkystonePosition;
-        openCollector();
-        suction();
-        if(FinalSystonePosition==0)
-        {
-            driveToVector(36,100,0.8,0);
-            driveToVector(42,100,0.8,0);
+        while(opModeIsActive()&& !isStopRequested()) {
+            FinalSystonePosition = SkystonePosition;
+            openCollector();
 
-            //stopCollector();
-            driveToVector(32,100,0.8,0);
-        }
-        else if(FinalSystonePosition==1)
-        {
-            driveToVector(30,108.5,0.8,0);
-            driveToVector(42,108.5,0.8,0);
-            // stopCollector();
-            driveToVector(30,108.5,0.8,0);
-        }
-        else
-        {
-            driveToVector(36,116,0.8,0);
-            driveToVector(42,116,0.8,0);
-            // stopCollector();
-            driveToVector(32,116,0.8,0);
-        }
-        driveToVector(30,68,1,270);
-        spit();
-        sleep(2000);
-        /*if(FinalSystonePosition!=0)
-        {
-            driveToVector(30,30,1,90);
-            suction();
-            if (FinalSystonePosition == 1) {
-                driveToVector(30, 12, 0.8, 0);
-                driveToVector(42, 12, 0.8, 0);
-                driveToVector(30, 12, 0.8, 0);
+            if (FinalSystonePosition == 0) {
+                driveToVector(30, 100, 0.8, 0);
+                leftspin();
+                driveToVector(38, 100, 0.8, 0);
+                suction();
+                driveToVector(54, 100, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 100, 0.8, 0);
+            } else if (FinalSystonePosition == 1) {
+                driveToVector(30, 112, 0.8, 0);
+                leftspin();
+                driveToVector(38, 112, 0.8, 0);
+                suction();
+                driveToVector(54, 112, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 112, 0.8, 0);
             } else {
-                driveToVector(30, 20, 0.8, 0);
-                driveToVector(42, 20, 0.8, 0);
-                driveToVector(30, 20, 0.8, 0);
+                driveToVector(30, 124, 0.8, 0);
+                leftspin();
+                driveToVector(38, 124, 0.8, 0);
+                suction();
+                driveToVector(54, 124, 0.8, 0);
+                intakeCollector();
+                driveToVector(30, 124, 0.8, 0);
 
             }
-            driveToVector(30, 76, 1, 90);
+            driveToVector(30, 68, 1, 270);
             spit();
-            driveToVector(30, 70, 0.8, 90);
+            sleep(2000);
+            openCollector();
+            if (FinalSystonePosition != 0) {
+                driveToVector(30, 30, 1, 90);
+
+                if (FinalSystonePosition == 1) {
+                    driveToVector(30, 12, 0.8, 0);
+                    driveToVector(38, 12, 0.8, 0);
+                    suction();
+                    driveToVector(54, 12, 0.8, 0);
+                    intakeCollector();
+                    driveToVector(30, 12, 0.8, 0);
+                } else {
+                    driveToVector(30, 20, 0.8, 0);
+                    driveToVector(38, 20, 0.8, 0);
+                    suction();
+                    driveToVector(54, 20, 0.8, 0);
+                    intakeCollector();
+                    driveToVector(30, 20, 0.8, 0);
+
+                }
+                driveToVector(30, 30, 1, 270);
+                spit();
+                driveToVector(30, 70, 0.8, 90);
+            }
         }
-
-         */
-
 
     }
 
@@ -179,7 +188,7 @@ public class OBlue_LZ1_SS1_SS2_P extends OdometryAutonomous
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.314159265354;
+        tfodParameters.minimumConfidence = 0.5;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
