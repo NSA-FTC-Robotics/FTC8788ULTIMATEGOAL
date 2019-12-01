@@ -206,14 +206,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
     public void openCollector()
     {
-        rightCollector.setPosition(0.4);
+        rightCollector.setPosition(0.45);
         sleep(50);
-        leftCollector.setPosition(0.6);
+        leftCollector.setPosition(0.55);
     }
     public void intakeCollector()
     {
-        rightCollector.setPosition(.2);
-        leftCollector.setPosition(0.8);
+        rightCollector.setPosition(.4);
+        leftCollector.setPosition(0.6);
     }
 
     public void initCoords(double x, double y, double t)
@@ -490,7 +490,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 {
                    da = 0.4;
                     if( power>0.5)
-                        power=0.4;
+                        power=0.5;
                 }
                 updateposition();
                 alterTheta(endDirection);
@@ -588,8 +588,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void suction ()
     {
-        intake1.setPower(-0.15);
-        intake2.setPower(0.15);
+        intake1.setPower(-1);
+        intake2.setPower(1);
     }
 
     public void stopCollector()

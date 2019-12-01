@@ -77,7 +77,7 @@ public class Red_Skystone2 extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(8.75,135.5 ,270);
+        initCoords(8.75,39 ,270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -109,59 +109,53 @@ public class Red_Skystone2 extends OdometryAutonomous
             FinalSystonePosition = SkystonePosition;
             openCollector();
 
-            if (FinalSystonePosition == 0) {
-                driveToVector(30, 100, 0.8, 0);
-                leftspin();
-                driveToVector(38, 100, 0.8, 0);
+            if (FinalSystonePosition == 0)
+            {
+                driveToVector(30, 28, 0.8, 0);
+                driveToVector(38, 28, 0.8, 0);
                 suction();
-                driveToVector(54, 100, 0.8, 0);
-                intakeCollector();
-                driveToVector(30, 100, 0.8, 0);
-            } else if (FinalSystonePosition == 1) {
-                driveToVector(30, 112, 0.8, 0);
-                leftspin();
-                driveToVector(38, 112, 0.8, 0);
-                suction();
-                driveToVector(54, 112, 0.8, 0);
-                intakeCollector();
-                driveToVector(30, 112, 0.8, 0);
-            } else {
-                driveToVector(30, 124, 0.8, 0);
-                leftspin();
-                driveToVector(38, 124, 0.8, 0);
-                suction();
-                driveToVector(54, 124, 0.8, 0);
-                intakeCollector();
-                driveToVector(30, 124, 0.8, 0);
-
+                driveToVector(54, 28, 0.8, 0);
+                driveToVector(30, 28, 0.8, 0);
             }
-            driveToVector(30, 68, 1, 270);
-            spit();
+            else if (FinalSystonePosition == 1)
+            {
+                driveToVector(30, 36, 0.8, 0);
+                driveToVector(38, 36, 0.8, 0);
+                suction();
+                driveToVector(54, 36, 0.8, 0);
+                driveToVector(30, 36, 0.8, 0);
+            }
+            else
+                {
+                    waypointVector(30, 44, 0.8, 1.5,0);
+                    //driveToVector(38, 44, 0.8, 0);
+                    suction();
+                    waypointVector(50, 44, 0.8, 1.5,0);
+                    waypointVector(30, 44, 0.6, 1.5,0);
+            }
+            driveToVector(36, 108, 1, 270);
             sleep(2000);
             openCollector();
             if (FinalSystonePosition != 0) {
-                driveToVector(30, 30, 1, 90);
-
+                driveToVector(30, 30, 1, 270);
                 if (FinalSystonePosition == 1) {
                     driveToVector(30, 12, 0.8, 0);
                     driveToVector(38, 12, 0.8, 0);
                     suction();
                     driveToVector(54, 12, 0.8, 0);
-                    intakeCollector();
                     driveToVector(30, 12, 0.8, 0);
                 } else {
                     driveToVector(30, 20, 0.8, 0);
                     driveToVector(38, 20, 0.8, 0);
                     suction();
                     driveToVector(54, 20, 0.8, 0);
-                    intakeCollector();
                     driveToVector(30, 20, 0.8, 0);
 
                 }
-                driveToVector(30, 30, 1, 270);
-                spit();
-                driveToVector(30, 70, 0.8, 90);
+                driveToVector(36, 108, 1, 270);
             }
+            driveToVector(36,72,1,270);
+            sleep(100000);
         }
 
     }
