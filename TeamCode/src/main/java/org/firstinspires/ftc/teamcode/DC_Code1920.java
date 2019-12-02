@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -28,13 +29,17 @@ public class DC_Code1920 extends OpMode
     private DcMotor backRight;
     private DcMotor leftWheel;
     private DcMotor rightWheel;
+    private DcMotor passiveWinch; //port 2
+    private DcMotor activeWinch; //port 3
     private Servo leftCollector;
     private Servo rightCollector;
-    private Servo rightscorer;
-    private Servo leftscorer;
+    private Servo outake;
+    private Servo orienter;
+    private Servo grabber;
     private Servo encoderlift;
+    private Servo capstonePlacer;
 
-    private double towerHeight = 1; // tracks the height of the tower the robot is working on
+    private double towerHeight = 0; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
     private boolean upPressed; //checks if the up/down button is unpressed before running method code again
     private boolean downPressed;
@@ -42,6 +47,10 @@ public class DC_Code1920 extends OpMode
     private double speed;
     private double driveangle;
     private boolean fieldCentric;
+    private boolean winchMode;
+    private boolean clawposition;
+
+    private final double ticksPerLevel = 342.2467;
 
 
     BNO055IMU               imu;
@@ -62,22 +71,39 @@ public class DC_Code1920 extends OpMode
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
+        leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
+        leftWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+        rightWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
+        passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
+        activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        leftCollector.setPosition(1);
+        //leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        rightCollector.setPosition(0);
+        //rightCollector.setPosition(0);
 
-        leftWheel = hardwareMap.get(DcMotor.class, "Intake1");
-        rightWheel = hardwareMap.get(DcMotor.class, "Intake2");
+        outake = hardwareMap.get(Servo.class, "outake");
+        outake.setPosition(0.85);
 
-        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
-        leftscorer.setPosition(0);
-        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
-        rightscorer.setPosition(1);
+        orienter = hardwareMap.get(Servo.class, "orienter");
+        orienter.setPosition(0.18);
+
+        grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
+
+        capstonePlacer = hardwareMap.get(Servo.class, "capstonePlacer");
+        capstonePlacer.setPosition(1);
 
         fieldCentric = false;
         apressed = false;
@@ -88,10 +114,6 @@ public class DC_Code1920 extends OpMode
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled      = false;
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -128,7 +150,7 @@ public class DC_Code1920 extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        dampener = 1 - (0.7 * (gamepad1.left_trigger));
+        dampener = 1 - (0.5 * (gamepad1.left_trigger));
         driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         telemetry.addData("DriveAngle", driveangle);
@@ -142,10 +164,10 @@ public class DC_Code1920 extends OpMode
         }
         else
         {
-            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x);
-            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x);
-            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x);
-            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x);
+            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
+            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
+            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
+            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
         }
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
@@ -153,7 +175,7 @@ public class DC_Code1920 extends OpMode
     {
         //collector in
         leftCollector.setPosition(0.75);
-        rightCollector.setPosition(0.25);
+        rightCollector.setPosition(0.17);
 
     }
     else
@@ -163,6 +185,11 @@ public class DC_Code1920 extends OpMode
         rightCollector.setPosition(0.4);
     }
 
+    if(gamepad1.a&&gamepad1.left_bumper)
+    {
+        capstonePlacer.setPosition(0.62);
+    }
+    else capstonePlacer.setPosition(1);
     if(gamepad1.y)
     {
         leftWheel.setPower(1);
@@ -189,46 +216,101 @@ public class DC_Code1920 extends OpMode
     }
     if(!gamepad1.a)apressed=false;
 
+//Gamepad 2
+
 
 
         if (!gamepad2.dpad_up)
         {
             upPressed = true;
+
         }
         if (!gamepad2.dpad_down)
         {
             downPressed = true;
+
         }
 
         if (gamepad2.dpad_up)
         {
             incrementTower();
+
         }
         if (gamepad2.dpad_down)
         {
             decrementTower();
+
         }
+        if (gamepad2.dpad_right)
+        {
+            //target = tower height
+            winchMode = true;
+        }
+        if (gamepad2.dpad_left)
+        {
+            //target = 1
+            winchMode = true;
+        }
+
+        //if(Math.abs(gamepad2.right_stick_y)>0.05)
+
+            winchMode = false;
+            activeWinch.setPower(-gamepad2.right_stick_y*0.4);
+            passiveWinch.setPower(-gamepad2.right_stick_y*0.4);
+
+       /* if(winchMode)
+        {
+            activeWinch.setTargetPosition((int)((towerHeight)*ticksPerLevel));
+            double winchpower = (0.5*((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())*0.01+0.2));
+
+            if(activeWinch.getCurrentPosition()<activeWinch.getTargetPosition())
+            {
+                activeWinch.setPower(winchpower);
+                passiveWinch.setPower(winchpower);
+            }
+            if(activeWinch.getCurrentPosition()>activeWinch.getTargetPosition())
+            {
+                activeWinch.setPower(-winchpower);
+                passiveWinch.setPower(-winchpower);
+            }
+        }
+
+        */
         if (gamepad2.x)
         {
-            towerHeight = 1.0;
+            towerHeight = 0;
+            winchMode = true;
         }
 
 
         if(gamepad2.right_bumper) {
-            leftscorer.setPosition(0.8);
-            rightscorer.setPosition(0.2);
+            outake.setPosition(0.15);
+            orienter.setPosition(0.34);
+            clawposition = true;
+        }
+        if(gamepad2.y) // alternate scoring position
+        {
+           outake.setPosition(0.25);
+            orienter.setPosition(0.6);
         }
 
         if(gamepad2.left_bumper)
         {
-            leftscorer.setPosition(0);
-            rightscorer.setPosition(1);
+            outake.setPosition(0.9);
+            orienter.setPosition(0.2);
+            clawposition = false;
         }
-        if(gamepad2.right_trigger>0.2)
+        if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper)
         {
-            leftscorer.setPosition(.7);
-            rightscorer.setPosition(.3);
+            outake.setPosition(0.8);
+            orienter.setPosition(0.18);
         }
+
+        if (gamepad2.a)
+            grabber.setPosition(0.3);
+        if (gamepad2.b)
+            grabber.setPosition(0);
+
 
 
 
@@ -294,15 +376,15 @@ public class DC_Code1920 extends OpMode
 
     public void incrementTower()
     {
-        towerHeight += 4;
+        towerHeight += 1;
         upPressed = false;
     }
 
     public void decrementTower()
     {
-        if (towerHeight >= 5)
+        if (towerHeight >= 1)
         {
-            towerHeight -= 4;
+            towerHeight -= 1;
         }
     }
 

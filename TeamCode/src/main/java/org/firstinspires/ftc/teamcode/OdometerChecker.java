@@ -46,7 +46,7 @@ public class OdometerChecker extends OpMode
         intake2 = hardwareMap.get(DcMotor.class, "Intake2");
         intake2.setDirection(DcMotor.Direction.FORWARD);
 
-        passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
 
         intake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

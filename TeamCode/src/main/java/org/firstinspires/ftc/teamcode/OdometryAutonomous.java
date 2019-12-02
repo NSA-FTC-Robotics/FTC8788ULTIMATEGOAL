@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -41,8 +43,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
     private Servo leftCollector;
     private Servo rightCollector;
-    private Servo rightscorer;
-    private Servo leftscorer;
+    private Servo outake;
+    private Servo orienter;
+    private Servo grabber;
     private Servo encoderlift;
 
     // original test odometry variables (ignore)
@@ -91,6 +94,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
 
 
+
+
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -124,24 +129,23 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         frontLeft = hardwareMap.get(DcMotor.class, "front_left");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
         intake1.setDirection(DcMotor.Direction.FORWARD);
@@ -149,8 +153,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake2 = hardwareMap.get(DcMotor.class, "Intake2");
         intake2.setDirection(DcMotor.Direction.FORWARD);
 
-        passiveWinch = hardwareMap.get(DcMotor.class, "PassiveWinch");
+        passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+
+        activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
+        activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        //activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         leftCollector.setPosition(1);
@@ -158,14 +166,17 @@ public abstract class OdometryAutonomous extends LinearOpMode
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
         rightCollector.setPosition(0);
 
-        leftscorer = hardwareMap.get(Servo.class, "left_scorer");
-        leftscorer.setPosition(0);
+        outake = hardwareMap.get(Servo.class, "outake");
+        outake.setPosition(0.8);
 
-        rightscorer = hardwareMap.get(Servo.class, "right_scorer");
-        rightscorer.setPosition(1);
+        orienter = hardwareMap.get(Servo.class, "orienter");
+        orienter.setPosition(0.2);
+
+        grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
-        encoderlift.setPosition(0.6);
+        encoderlift.setPosition(0.7); // needs testing
 
 
 
@@ -176,9 +187,23 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     // sets initial coordinates of robot
+
+    public void openCollector()
+    {
+        rightCollector.setPosition(0.45);
+        sleep(50);
+        leftCollector.setPosition(0.55);
+    }
+    public void intakeCollector()
+    {
+        leftCollector.setPosition(0.75);
+        rightCollector.setPosition(0.17);
+    }
+
     public void initCoords(double x, double y, double t)
     {
          fieldX = x;
@@ -206,9 +231,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
         pulseRightX = intake2.getCurrentPosition(); //intake 2
         pulseLeftX = intake1.getCurrentPosition(); //intake1
 
-        inchRightY = pulseRightY * pulseToInch;
+        inchRightY = pulseRightY * pulseToInch *-1;
         inchRightX = pulseRightX * pulseToInch * -1;
-        inchLeftX = pulseLeftX * pulseToInch * -1;
+        inchLeftX = pulseLeftX * pulseToInch ;
 
         diffRY = inchRightY-lastRY;
         diffRX= inchRightX-lastRX;
@@ -270,9 +295,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
         double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>1)
+        if(Math.abs(t-targetTheta)>1 && !isStopRequested())
         {
-            while (Math.abs(t - targetTheta) > .02) {
+            while (Math.abs(t - targetTheta) > .02 && !isStopRequested()) {
                 updateposition();
                 t = Math.toDegrees(fieldT);
 
@@ -402,14 +427,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double da = 1;
 
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance >.5)
+            while (distance >1 && !isStopRequested())
             {
-                while (distance >.1) {
+                while (distance >.9 && !isStopRequested()) {
                     distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                     if (distance < 30) da = 0.4;
                     if (distance < 10)
                     {
-                        da = 0.25;
+                        //da = 0.25;
                         if( power>0.5)
                             power=0.4;
                     }
@@ -444,16 +469,16 @@ public abstract class OdometryAutonomous extends LinearOpMode
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >.5)
+        while (distance >1 && !isStopRequested())
         {
-            while (distance >.1) {
+            while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                if (distance < 30) da = 0.4;
+                if (distance < 30) da = 0.5;
                 if (distance < 10)
                 {
-                    da = 0.25;
+                   da = 0.4;
                     if( power>0.5)
-                        power=0.4;
+                        power=0.5;
                 }
                 updateposition();
                 alterTheta(endDirection);
@@ -483,7 +508,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-       while (distance > precision)
+       while (distance > precision && !isStopRequested())
        {
            updateposition();
            alterTheta(target(targetX, targetY));
@@ -502,7 +527,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance > precision)
+        while (distance > precision && !isStopRequested())
         {
             updateposition();
             alterTheta(endDirection);
@@ -549,4 +574,25 @@ public abstract class OdometryAutonomous extends LinearOpMode
         backLeft.setPower(0);
         backRight.setPower(0);
     }
+    public void suction ()
+    {
+        intake1.setPower(-1);
+        intake2.setPower(1);
+    }
+
+    public void stopCollector()
+    {
+        intake1.setPower(0);
+        intake2.setPower(0);
+    }
+    public void spit()
+    {
+        intake1.setPower(0.5);
+        intake2.setPower(-0.5);
+    }
+    public  void leftspin()
+    {
+        intake2.setPower(0.5);
+    }
+
 }

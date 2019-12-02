@@ -14,17 +14,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 public class TestOdometry extends OdometryAutonomous
 {
 @Override
-    public void runOpMode()
+    public void runOpMode() throws InterruptedException
     {
-       setConfig();
+
+        setConfig();
        initCoords(12,12,0);
         waitForStart();
-        if (opModeIsActive())
+        while (opModeIsActive()&& !isStopRequested())
         {
-            waypoint(72,24,0.6,0.5);
-            waypoint(24,72,0.6,0.2);
-            driveTo(72,72,0.6);
+
+            driveTo(24,24,0.6);
             setTheta(0,0.4);
         }
+        idle();
     }
 }
