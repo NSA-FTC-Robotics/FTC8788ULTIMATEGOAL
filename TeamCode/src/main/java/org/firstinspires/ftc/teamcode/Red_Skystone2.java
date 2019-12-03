@@ -38,7 +38,7 @@ public class Red_Skystone2 extends OdometryAutonomous
     private static final double ScreenMiddleX = ScreenSizeX/2;
     private static final double ScreenMiddleY = ScreenSizeY/2;
     private int SkystonePosition = 0;
-    private int FinalSystonePosition;
+    private int FinalSkystonePosition;
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -74,10 +74,9 @@ public class Red_Skystone2 extends OdometryAutonomous
      */
     private TFObjectDetector tfod;
 
-    public void runOpMode()
-    {
+    public void runOpMode() {
         setConfig();
-        initCoords(8.75,39 ,270);
+        initCoords(8.75, 39, 270);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -93,89 +92,95 @@ public class Red_Skystone2 extends OdometryAutonomous
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-        while(!opModeIsActive() && !isStopRequested())
+
+        while (!opModeIsActive() && !isStopRequested())
         {
-            driveToVector(24.25, 38, .8,270);
             getSkystoneVars();
 
-            if (SkystoneMiddleX == 9999)
-            {
-                driveToVector(32, 30, .8,0);
-                openCollector();
-                suction();
-                driveTo(48, 30, .8);
-            }
-            else
-            {
-                // get stone in other positions
-            }
+            if (SkystoneMiddleX >= 500 && SkystoneMiddleX <= 700)
+                SkystonePosition = 1;
+            if (SkystoneMiddleX > 700)
+                SkystonePosition = 2;
 
-
-
-            /*
-            if(SkystoneMiddleX<500) SkystonePosition = 0;
-            if(SkystoneMiddleX>=500&&SkystoneMiddleX<=700) SkystonePosition = 1;
-            if(SkystoneMiddleX>700) SkystonePosition = 2;
-            telemetry.addData("SkystoneX", SkystoneMiddleX);
-            telemetry.addData("SkystoneY", SkystoneMiddleY);
-            telemetry.addData("Skystone Position:",SkystonePosition);
+            telemetry.addData("SkystonePosition", SkystonePosition);
             telemetry.update();
-             */
         }
+
         waitForStart();
-        while(opModeIsActive()&& !isStopRequested()) {
-            FinalSystonePosition = SkystonePosition;
+        while (opModeIsActive() && !isStopRequested()) {
+
             openCollector();
             suction();
 
-            if (FinalSystonePosition == 0)
-            {
-                waypointVector(30,20,0.4,1.5,330);
-                driveToVector(42,16,0.8,330);
-                intakeCollector();
-                waypointVector(30,20,0.6,4,330);
+            // collects first stone
+            if (SkystonePosition == 0) {
+                driveToVector(32, 36, .8, 315);
+                driveToVector(54, 20, .8,315);
+                driveToVector(32, 36, .8, 315);
+            } else if (SkystonePosition == 1) {
+                driveToVector(36, 44, .8, 315);
+                driveToVector(48, 30, .8,315);
+                driveToVector(36, 44, .8, 315);
+            } else if (SkystonePosition == 2) {
+                driveToVector(32, 60, .8, 315);
+                driveToVector(48, 48, .8, 315); // needs fixing
+                driveToVector(32, 60, .8, 315);
+            }
 
-                /*
+            // drops off first stone
+            driveToVector(30, 72, .8, 270);
+            driveToVector(30, 96, .8, 270);
+            //driveToVector(24, 96, .4, 90);
+            spit();
+
+            /*
+
+                exact same loop, but all target coords are 24 less y
+
+            FinalSkystonePosition = SkystonePosition;
+
+            if (FinalSkystonePosition == 0) {
+                driveToVector(30, 20, 0.4, 330);
+                driveToVector(42, 16, 0.8, 330);
+                intakeCollector();
+                waypointVector(30, 20, 0.6, 4, 330);
+
+
                 driveToVector(30, 28, 0.8, 0);
                 driveToVector(38, 28, 0.8, 0);
                 suction();
                 driveToVector(54, 28, 0.8, 0);
                 driveToVector(30, 28, 0.8, 0);
-
-                 */
             }
-            else if (FinalSystonePosition == 1)
+
+            else if (FinalSkystonePosition == 1)
             {
                 driveToVector(30,28,0.8,315);
-               /*
                 driveToVector(30, 36, 0.8, 0);
                 driveToVector(38, 36, 0.8, 0);
                 suction();
                 driveToVector(54, 36, 0.8, 0);
                 driveToVector(30, 36, 0.8, 0);
-
-                */
             }
-            else
-                {
+
+            else {
 
                     driveToVector(30,36,1,315);
 
-                    /*waypointVector(30, 44, 0.8, 1.5,0);
-                    //driveToVector(38, 44, 0.8, 0);
+                    waypointVector(30, 44, 0.8, 1.5,0);
+                    driveToVector(38, 44, 0.8, 0);
                     suction();
                     waypointVector(50, 44, 0.8, 1.5,0);
                     waypointVector(30, 44, 0.6, 1.5,0);
-
-                     */
             }
+
             waypointVector(36,70,1,6,270);
             openCollector();
-           driveToVector(36, 108, 1, 270);
-           sleep(1000);
+            driveToVector(36, 108, 1, 270);
+            sleep(1000);
             waypointVector(36,70,1,6,270);
 
-            if (FinalSystonePosition == 0)
+            if (FinalSkystonePosition == 0)
             {
                 waypointVector(30,44,0.4,1.5,315);
                 driveToVector(42,40,0.8,315);
@@ -189,9 +194,9 @@ public class Red_Skystone2 extends OdometryAutonomous
                 driveToVector(54, 28, 0.8, 0);
                 driveToVector(30, 28, 0.8, 0);
 
-                 */
+
             }
-            else if (FinalSystonePosition == 1)
+            else if (FinalSkystonePosition == 1)
             {
                 driveToVector(30,28,0.8,315);
                /*
@@ -201,7 +206,7 @@ public class Red_Skystone2 extends OdometryAutonomous
                 driveToVector(54, 36, 0.8, 0);
                 driveToVector(30, 36, 0.8, 0);
 
-                */
+
             }
             else
             {
@@ -214,15 +219,18 @@ public class Red_Skystone2 extends OdometryAutonomous
                     waypointVector(50, 44, 0.8, 1.5,0);
                     waypointVector(30, 44, 0.6, 1.5,0);
 
-                     */
+
             }
             waypointVector(36,70,1,2,270);
             driveToVector(36, 108, 1, 270);
             driveToVector(36,72,1,270);
-            stop();
+
+             */
+                stop();
+            }
+
         }
 
-    }
 
     private void initVuforia() {
         /*
@@ -257,7 +265,8 @@ public class Red_Skystone2 extends OdometryAutonomous
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if(updatedRecognitions!=null) {
                 for (Recognition recognition : updatedRecognitions) {
-                    if (recognition.getLabel().equals("Skystone")) {
+                    if (recognition.getLabel().equals("Skystone"))
+                    {
                         SkystoneLeft = recognition.getLeft();
                         SkystoneRight = recognition.getRight();
                         SkystoneTop = recognition.getTop();
@@ -268,12 +277,9 @@ public class Red_Skystone2 extends OdometryAutonomous
             SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
             SkystoneMiddleY = (SkystoneBottom + SkystoneTop) / 2;
         }
-        else
-        {
-            SkystoneMiddleX = 9999;
-        }
     }
 }
+
 
 
 
