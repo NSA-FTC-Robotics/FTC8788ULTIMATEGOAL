@@ -95,7 +95,24 @@ public class Red_Skystone2 extends OdometryAutonomous
         telemetry.update();
         while(!opModeIsActive() && !isStopRequested())
         {
+            driveToVector(24.25, 38, .8,270);
             getSkystoneVars();
+
+            if (SkystoneMiddleX == 9999)
+            {
+                driveToVector(32, 30, .8,0);
+                openCollector();
+                suction();
+                driveTo(48, 30, .8);
+            }
+            else
+            {
+                // get stone in other positions
+            }
+
+
+
+            /*
             if(SkystoneMiddleX<500) SkystonePosition = 0;
             if(SkystoneMiddleX>=500&&SkystoneMiddleX<=700) SkystonePosition = 1;
             if(SkystoneMiddleX>700) SkystonePosition = 2;
@@ -103,6 +120,7 @@ public class Red_Skystone2 extends OdometryAutonomous
             telemetry.addData("SkystoneY", SkystoneMiddleY);
             telemetry.addData("Skystone Position:",SkystonePosition);
             telemetry.update();
+             */
         }
         waitForStart();
         while(opModeIsActive()&& !isStopRequested()) {
@@ -249,6 +267,10 @@ public class Red_Skystone2 extends OdometryAutonomous
             }
             SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
             SkystoneMiddleY = (SkystoneBottom + SkystoneTop) / 2;
+        }
+        else
+        {
+            SkystoneMiddleX = 9999;
         }
     }
 }
