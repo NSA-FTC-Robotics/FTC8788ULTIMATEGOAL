@@ -205,7 +205,7 @@ public class DC_Code1920 extends OpMode
             leftWheel.setPower(0);
             rightWheel.setPower(0);
         }
-    if(gamepad1.a && !apressed)
+    if(gamepad1.a && gamepad1.b && !apressed)
     {
         if(fieldCentric)
         {
@@ -214,7 +214,7 @@ public class DC_Code1920 extends OpMode
         else fieldCentric = true;
         apressed = true;
     }
-    if(!gamepad1.a)apressed=false;
+    if(!gamepad1.a||!gamepad1.b)apressed=false;
 
 //Gamepad 2
 
@@ -371,7 +371,7 @@ public class DC_Code1920 extends OpMode
     {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        return -1 * angles.firstAngle;
+        return Math.toRadians(-1 * angles.firstAngle);
     }
 
     public void incrementTower()

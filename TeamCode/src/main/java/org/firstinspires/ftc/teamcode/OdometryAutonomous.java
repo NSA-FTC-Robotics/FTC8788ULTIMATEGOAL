@@ -31,6 +31,18 @@ public abstract class OdometryAutonomous extends LinearOpMode
     //                             //
     /////////////////////////////////
 
+/*
+                          😜
+                       👊/||\_
+                       _/¯  ¯\_
+
+                        👋 😳
+                           || \_
+                        _/¯  ¯\_
+
+
+ */
+
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeft;
     private DcMotor backLeft;
@@ -93,6 +105,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
 
+    BNO055IMU imu;
+    Orientation lastAngles = new Orientation();
+    double                  globalAngle, power = .30, correction;
 
 
 
@@ -188,22 +203,49 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
+        telemetry.addData("Mode", "calibrating...");
+        telemetry.update();
+
+        // make sure the imu gyro is calibrated before continuing.
+        while (!imu.isGyroCalibrated())
+        {
+
+        }
+
+
     }
 
     // sets initial coordinates of robot
 
     public void openCollector()
     {
-        rightCollector.setPosition(0.45);
+        rightCollector.setPosition(0.4);
         sleep(50);
-        leftCollector.setPosition(0.55);
+        leftCollector.setPosition(0.6);
     }
     public void intakeCollector()
     {
+        rightCollector.setPosition(.25);
         leftCollector.setPosition(0.75);
-        rightCollector.setPosition(0.17);
     }
-
     public void initCoords(double x, double y, double t)
     {
          fieldX = x;
@@ -295,9 +337,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
         double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>1 && !isStopRequested())
+        if(Math.abs(t-targetTheta)>1)
         {
-            while (Math.abs(t - targetTheta) > .02 && !isStopRequested()) {
+            while (Math.abs(t - targetTheta) > .02) {
                 updateposition();
                 t = Math.toDegrees(fieldT);
 
@@ -427,9 +469,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double da = 1;
 
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance >1 && !isStopRequested())
+            while (distance >1)
             {
-                while (distance >.9 && !isStopRequested()) {
+                while (distance >.9) {
                     distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                     if (distance < 30) da = 0.4;
                     if (distance < 10)
@@ -469,16 +511,16 @@ public abstract class OdometryAutonomous extends LinearOpMode
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >1 && !isStopRequested())
+        while (distance >1)
         {
-            while (distance >.9 && !isStopRequested()) {
+            while (distance >.9) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                 if (distance < 30) da = 0.5;
                 if (distance < 10)
                 {
                    da = 0.4;
                     if( power>0.5)
-                        power=0.5;
+                        power=0.4;
                 }
                 updateposition();
                 alterTheta(endDirection);
@@ -508,7 +550,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-       while (distance > precision && !isStopRequested())
+       while (distance > precision)
        {
            updateposition();
            alterTheta(target(targetX, targetY));
@@ -527,7 +569,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance > precision && !isStopRequested())
+        while (distance > precision)
         {
             updateposition();
             alterTheta(endDirection);
@@ -576,8 +618,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void suction ()
     {
-        intake1.setPower(-1);
-        intake2.setPower(1);
+        intake1.setPower(-0.3);
+        intake2.setPower(0.3);
     }
 
     public void stopCollector()
@@ -590,9 +632,4 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake1.setPower(0.5);
         intake2.setPower(-0.5);
     }
-    public  void leftspin()
-    {
-        intake2.setPower(0.5);
-    }
-
 }
