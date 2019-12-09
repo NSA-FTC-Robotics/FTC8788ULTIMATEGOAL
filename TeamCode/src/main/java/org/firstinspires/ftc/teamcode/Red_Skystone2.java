@@ -28,8 +28,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-
-
 @Autonomous(name = "Red Skystone 2")
 public class Red_Skystone2 extends OdometryAutonomous
 {
@@ -140,27 +138,15 @@ public class Red_Skystone2 extends OdometryAutonomous
             FinalSkystonePosition = SkystonePosition;
 
             if (FinalSkystonePosition == 0) {
-                driveToVector(30, 20, 0.4, 330);
-                driveToVector(42, 16, 0.8, 330);
-                intakeCollector();
-                waypointVector(30, 20, 0.6, 4, 330);
-
-
-                driveToVector(30, 28, 0.8, 0);
-                driveToVector(38, 28, 0.8, 0);
-                suction();
-                driveToVector(54, 28, 0.8, 0);
-                driveToVector(30, 28, 0.8, 0);
+                driveToVector(32, 12, .8, 315);
+                driveToVector(54, 36, .8,315);
+                driveToVector(32, 12, .8, 315);
             }
 
-            else if (FinalSkystonePosition == 1)
-            {
-                driveToVector(30,28,0.8,315);
-                driveToVector(30, 36, 0.8, 0);
-                driveToVector(38, 36, 0.8, 0);
-                suction();
-                driveToVector(54, 36, 0.8, 0);
-                driveToVector(30, 36, 0.8, 0);
+            else if (FinalSkystonePosition == 1) {
+                driveToVector(36, 20, .8, 315);
+                driveToVector(48, 6, .8,315);
+                driveToVector(36, 20, .8, 315);
             }
 
             else {
@@ -180,47 +166,6 @@ public class Red_Skystone2 extends OdometryAutonomous
             sleep(1000);
             waypointVector(36,70,1,6,270);
 
-            if (FinalSkystonePosition == 0)
-            {
-                waypointVector(30,44,0.4,1.5,315);
-                driveToVector(42,40,0.8,315);
-                intakeCollector();
-                waypointVector(30,44,0.6,4,315);
-
-                /*
-                driveToVector(30, 28, 0.8, 0);
-                driveToVector(38, 28, 0.8, 0);
-                suction();
-                driveToVector(54, 28, 0.8, 0);
-                driveToVector(30, 28, 0.8, 0);
-
-
-            }
-            else if (FinalSkystonePosition == 1)
-            {
-                driveToVector(30,28,0.8,315);
-               /*
-                driveToVector(30, 36, 0.8, 0);
-                driveToVector(38, 36, 0.8, 0);
-                suction();
-                driveToVector(54, 36, 0.8, 0);
-                driveToVector(30, 36, 0.8, 0);
-
-
-            }
-            else
-            {
-
-                driveToVector(30,36,1,315);
-
-                    /*waypointVector(30, 44, 0.8, 1.5,0);
-                    //driveToVector(38, 44, 0.8, 0);
-                    suction();
-                    waypointVector(50, 44, 0.8, 1.5,0);
-                    waypointVector(30, 44, 0.6, 1.5,0);
-
-
-            }
             waypointVector(36,70,1,2,270);
             driveToVector(36, 108, 1, 270);
             driveToVector(36,72,1,270);

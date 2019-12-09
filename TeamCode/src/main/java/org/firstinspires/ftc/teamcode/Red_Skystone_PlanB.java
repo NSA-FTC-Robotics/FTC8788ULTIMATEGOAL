@@ -31,8 +31,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@Autonomous(name = "Blue Skystone 2 ")
-public class Blue_Skystone2 extends OdometryAutonomous2
+@Autonomous(name = "Red Skystone Plan B")
+public class Red_Skystone_PlanB extends OdometryAutonomous2
 {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -75,7 +75,7 @@ public class Blue_Skystone2 extends OdometryAutonomous2
 
     public void runOpMode() {
         setConfig();
-        initCoords(135.25, 39, 90);
+        initCoords(8.75, 39, 270);
 
 
         /** Wait for the game to begin */
@@ -85,33 +85,33 @@ public class Blue_Skystone2 extends OdometryAutonomous2
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
 
-            driveToVector(108,39, .8, 90);
+            driveToVector(36,39, .8, 270);
 
             getCoordinates();
 
-            driveToVector(120, 39, .8, 90);
+            driveToVector(24, 39, .8, 270);
 
             openCollector();
             suction();
 
             if (SkystoneY < -4) {
-                driveToVector(112, 36, .8, 135);
-                driveToVector(90, 20, .8,135);
-                driveToVector(112, 36, .8, 135);
+                driveToVector(32, 36, .8, 315);
+                driveToVector(54, 20, .8,315);
+                driveToVector(32, 36, .8, 315);
             } else if (Math.abs(SkystoneY) < 4) {
-                driveToVector(108, 44, .8, 135);
-                driveToVector(96, 30, .8,135);
-                driveToVector(108, 44, .8, 135);
+                driveToVector(36, 44, .8, 315);
+                driveToVector(48, 30, .8,315);
+                driveToVector(36, 44, .8, 315);
             } else if (SkystoneY > 4) {
-                driveToVector(112, 60, .8, 135);
-                driveToVector(96, 48, .8, 135); // needs fixing
-                driveToVector(112, 60, .8, 135);
+                driveToVector(32, 60, .8, 315);
+                driveToVector(48, 48, .8, 315); // needs fixing
+                driveToVector(32, 60, .8, 315);
             }
 
 
             // drops off first stone
-            driveToVector(114, 72, .8, 90);
-            driveToVector(114, 96, .8, 90);
+            driveToVector(30, 72, .8, 270);
+            driveToVector(30, 96, .8, 270);
             //driveToVector(24, 96, .4, 90);
             spit();
 
