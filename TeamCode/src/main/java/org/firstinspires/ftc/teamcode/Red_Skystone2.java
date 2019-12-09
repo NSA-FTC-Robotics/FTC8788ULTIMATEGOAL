@@ -94,14 +94,6 @@ public class Red_Skystone2 extends OdometryAutonomous
         while (!opModeIsActive() && !isStopRequested())
         {
             getSkystoneVars();
-
-            if (SkystoneMiddleX >= 500 && SkystoneMiddleX <= 700)
-                SkystonePosition = 1;
-            if (SkystoneMiddleX > 700)
-                SkystonePosition = 2;
-
-            telemetry.addData("SkystonePosition", SkystonePosition);
-            telemetry.update();
         }
 
         waitForStart();
@@ -199,7 +191,7 @@ public class Red_Skystone2 extends OdometryAutonomous
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.5;
+        tfodParameters.minimumConfidence = 0.4;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
@@ -221,6 +213,23 @@ public class Red_Skystone2 extends OdometryAutonomous
             }
             SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
             SkystoneMiddleY = (SkystoneBottom + SkystoneTop) / 2;
+
+            if (updatedRecognitions != null) {
+                if (updatedRecognitions.size() == 1)
+                    SkystonePosition = 1;
+                else if (SkystoneMiddleX >= 650 && updatedRecognitions.size() != 1)
+                    SkystonePosition = 2;
+                else
+                    SkystonePosition = 0;
+            }
+            telemetry.addData("SkystonePosition", SkystonePosition);
+            telemetry.update();
+
+            if (updatedRecognitions != null) {
+                telemetry.addData("Number of items in list: ", updatedRecognitions.size());
+                telemetry.update();
+            }
+
         }
     }
 }
