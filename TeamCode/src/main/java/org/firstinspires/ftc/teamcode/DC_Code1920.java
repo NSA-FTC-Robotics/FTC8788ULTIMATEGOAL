@@ -91,10 +91,8 @@ public class DC_Code1920 extends OpMode
         //rightCollector.setPosition(0);
 
         outake = hardwareMap.get(Servo.class, "outake");
-        outake.setPosition(0.85);
 
         orienter = hardwareMap.get(Servo.class, "orienter");
-        orienter.setPosition(0.18);
 
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber.setPosition(0);
@@ -284,26 +282,26 @@ public class DC_Code1920 extends OpMode
 
 
         if(gamepad2.right_bumper) {
-            outake.setPosition(0.15);
-            orienter.setPosition(0.34);
+            orienter.setPosition(.355);
+            outake.setPosition(0.29);
             clawposition = true;
         }
         if(gamepad2.y) // alternate scoring position
         {
-           outake.setPosition(0.25);
-            orienter.setPosition(0.6);
+           outake.setPosition(0.29);
+            orienter.setPosition(0);
         }
 
         if(gamepad2.left_bumper)
         {
-            outake.setPosition(0.9);
-            orienter.setPosition(0.2);
+            orienter.setPosition(0.355);
+            outake.setPosition(1);
             clawposition = false;
         }
         if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper)
         {
-            outake.setPosition(0.8);
-            orienter.setPosition(0.18);
+            outake.setPosition(1);
+            orienter.setPosition(0);
         }
 
         if (gamepad2.a)
