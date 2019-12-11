@@ -212,15 +212,14 @@ public class Red_Skystone2 extends OdometryAutonomous
                 }
             }
             SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
-            SkystoneMiddleY = (SkystoneBottom + SkystoneTop) / 2;
 
             if (updatedRecognitions != null) {
-                if (updatedRecognitions.size() == 1)
-                    SkystonePosition = 1;
-                else if (SkystoneMiddleX >= 650 && updatedRecognitions.size() != 1)
-                    SkystonePosition = 2;
-                else
-                    SkystonePosition = 0;
+                if (updatedRecognitions.size() == 1) // determines if the stone is in the center position as the phone would interpret all three stones as one
+                    SkystonePosition = 1; // center stone
+                else if (SkystoneMiddleX >= 650 && updatedRecognitions.size() != 1) // Checks to see if the skystone and stone interpetted as a single skystone object is on the right of the detection zone.
+                    SkystonePosition = 2; //right stone
+                else // if it sees two objects and the skystone is not on the right, then the skystone must be on the left
+                    SkystonePosition = 0; //left stone
             }
             telemetry.addData("SkystonePosition", SkystonePosition);
             telemetry.update();

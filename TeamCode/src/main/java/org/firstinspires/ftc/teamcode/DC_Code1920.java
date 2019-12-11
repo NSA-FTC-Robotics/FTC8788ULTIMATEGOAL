@@ -82,7 +82,6 @@ public class DC_Code1920 extends OpMode
 
         activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
         activeWinch.setDirection(DcMotor.Direction.FORWARD);
-        activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         //leftCollector.setPosition(1);
