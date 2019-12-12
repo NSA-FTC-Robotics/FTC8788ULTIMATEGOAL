@@ -200,6 +200,11 @@ public class DC_Code1920 extends OpMode
             leftWheel.setPower(-1);
             rightWheel.setPower(1);
         }
+    if(gamepad1.right_bumper)
+    {
+        leftWheel.setPower(-0.3);
+        rightWheel.setPower(0.3);
+    }
     if(gamepad1.x)
         {
             leftWheel.setPower(0);
@@ -255,8 +260,8 @@ public class DC_Code1920 extends OpMode
         //if(Math.abs(gamepad2.right_stick_y)>0.05)
 
             winchMode = false;
-            activeWinch.setPower(-gamepad2.right_stick_y*0.4);
-            passiveWinch.setPower(-gamepad2.right_stick_y*0.4);
+            activeWinch.setPower(-gamepad2.right_stick_y*0.5*(1-0.5*(gamepad2.left_trigger)));
+            passiveWinch.setPower(-gamepad2.right_stick_y*0.5*(1-0.5*(gamepad2.left_trigger)));
 
        /* if(winchMode)
         {
