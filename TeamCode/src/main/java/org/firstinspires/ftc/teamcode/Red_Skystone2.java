@@ -104,17 +104,17 @@ public class Red_Skystone2 extends OdometryAutonomous
 
             // collects first stone
             if (SkystonePosition == 0) {
-                driveToVector(32, 36, .8, 315);
-                driveToVector(54, 20, .8,315);
-                driveToVector(32, 36, .8, 315);
+                driveToVector(32, 28, .8, 0);
+                driveToVector(54, 28, .8,0);
+                driveToVector(32, 28, .8, 0);
             } else if (SkystonePosition == 1) {
-                driveToVector(36, 44, .8, 315);
-                driveToVector(48, 30, .8,315);
-                driveToVector(36, 44, .8, 315);
+                driveToVector(32, 36, .8, 0);
+                driveToVector(52, 36, .8,0);
+                driveToVector(32, 36, .8, 0);
             } else if (SkystonePosition == 2) {
-                driveToVector(32, 60, .8, 315);
-                driveToVector(48, 48, .8, 315); // needs fixing
-                driveToVector(32, 60, .8, 315);
+                driveToVector(32, 44, .8, 315);
+                driveToVector(52, 44, .8, 315); // needs fixing
+                driveToVector(32, 44, .8, 315);
             }
 
             // drops off first stone
@@ -129,38 +129,25 @@ public class Red_Skystone2 extends OdometryAutonomous
 
             FinalSkystonePosition = SkystonePosition;
 
-            if (FinalSkystonePosition == 0) {
-                driveToVector(32, 12, .8, 315);
-                driveToVector(54, 36, .8,315);
-                driveToVector(32, 12, .8, 315);
+            // collects second stone
+            if (SkystonePosition == 0) {
+                driveToVector(32, 4, .8, 0);
+                driveToVector(54, 4, .8,0);
+                driveToVector(32, 4, .8, 0);
+            } else if (SkystonePosition == 1) {
+                driveToVector(32, 12, .8, 0);
+                driveToVector(52, 12, .8,0);
+                driveToVector(32, 12, .8, 0);
+            } else if (SkystonePosition == 2) {
+                driveToVector(32, 20, .8, 0);
+                driveToVector(52, 20, .8, 0); // needs fixing
+                driveToVector(32, 20, .8, 0);
             }
 
-            else if (FinalSkystonePosition == 1) {
-                driveToVector(36, 20, .8, 315);
-                driveToVector(48, 6, .8,315);
-                driveToVector(36, 20, .8, 315);
-            }
+            driveToVector(30, 72, .8, 270);
+            driveToVector(30, 96, .8, 270);
 
-            else {
-
-                    driveToVector(30,36,1,315);
-
-                    waypointVector(30, 44, 0.8, 1.5,0);
-                    driveToVector(38, 44, 0.8, 0);
-                    suction();
-                    waypointVector(50, 44, 0.8, 1.5,0);
-                    waypointVector(30, 44, 0.6, 1.5,0);
-            }
-
-            waypointVector(36,70,1,6,270);
-            openCollector();
-            driveToVector(36, 108, 1, 270);
-            sleep(1000);
-            waypointVector(36,70,1,6,270);
-
-            waypointVector(36,70,1,2,270);
-            driveToVector(36, 108, 1, 270);
-            driveToVector(36,72,1,270);
+            driveToVector(28, 72, .8, 0);       // park
 
              */
                 stop();

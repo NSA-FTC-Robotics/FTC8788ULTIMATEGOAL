@@ -181,6 +181,11 @@ public class DC_Code1920 extends OpMode
         leftCollector.setPosition(0.6);
         rightCollector.setPosition(0.4);
     }
+    if(gamepad1.left_bumper)
+    {
+        leftWheel.setPower(-0.3);
+        rightWheel.setPower(0.3);
+    }
 
     if(gamepad1.a&&gamepad1.left_bumper)
     {
