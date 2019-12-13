@@ -79,9 +79,11 @@ public class DC_Code1920 extends OpMode
 
         passiveWinch = hardwareMap.get(DcMotor.class, "passiveWinch");
         passiveWinch.setDirection(DcMotor.Direction.FORWARD);
+        passiveWinch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
         activeWinch.setDirection(DcMotor.Direction.FORWARD);
+        activeWinch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         //leftCollector.setPosition(1);
@@ -147,7 +149,7 @@ public class DC_Code1920 extends OpMode
         telemetry.update();
         telemetry.clear();
 
-        dampener = 1 - (0.5 * (gamepad1.left_trigger));
+        dampener = 1 - (0.65 * (gamepad1.left_trigger));
         driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         telemetry.addData("DriveAngle", driveangle);
@@ -257,8 +259,13 @@ public class DC_Code1920 extends OpMode
         //if(Math.abs(gamepad2.right_stick_y)>0.05)
 
             winchMode = false;
-            activeWinch.setPower(-gamepad2.right_stick_y*0.4);
-            passiveWinch.setPower(-gamepad2.right_stick_y*0.4);
+        if (gamepad2.right_stick_y<0) {
+            activeWinch.setPower(-gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
+            passiveWinch.setPower(-gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
+        }
+        else
+            activeWinch.setPower((-gamepad2.right_stick_y * 0.5)*(1-0.5*gamepad2.left_trigger));
+        passiveWinch.setPower((-gamepad2.right_stick_y * 0.5)*(1-0.5*gamepad2.left_trigger));
 
        /* if(winchMode)
         {

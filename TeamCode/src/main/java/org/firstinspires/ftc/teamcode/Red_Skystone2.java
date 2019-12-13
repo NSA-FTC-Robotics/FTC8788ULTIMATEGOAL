@@ -94,11 +94,13 @@ public class Red_Skystone2 extends OdometryAutonomous
         while (!opModeIsActive() && !isStopRequested())
         {
             getSkystoneVars();
+            telemetry.addData("SkystonePosition", SkystonePosition);
+            telemetry.update();
         }
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-
+            FinalSkystonePosition = SkystonePosition;
             openCollector();
             suction();
 
@@ -118,8 +120,8 @@ public class Red_Skystone2 extends OdometryAutonomous
             }
 
             // drops off first stone
-            driveToVector(30, 72, .8, 270);
-            driveToVector(30, 96, .8, 270);
+            driveToVector(30, 72, .8, 90);
+            driveToVector(30, 80, .8, 90);
             //driveToVector(24, 96, .4, 90);
             spit();
 
@@ -199,7 +201,6 @@ public class Red_Skystone2 extends OdometryAutonomous
                 }
             }
             SkystoneMiddleX = (SkystoneLeft + SkystoneRight) / 2;
-
             if (updatedRecognitions != null) {
                 if (updatedRecognitions.size() == 1) // determines if the stone is in the center position as the phone would interpret all three stones as one
                     SkystonePosition = 1; // center stone
@@ -208,17 +209,12 @@ public class Red_Skystone2 extends OdometryAutonomous
                 else // if it sees two objects and the skystone is not on the right, then the skystone must be on the left
                     SkystonePosition = 0; //left stone
             }
-            telemetry.addData("SkystonePosition", SkystonePosition);
-            telemetry.update();
-
-            if (updatedRecognitions != null) {
-                telemetry.addData("Number of items in list: ", updatedRecognitions.size());
-                telemetry.update();
             }
+
 
         }
     }
-}
+
 
 
 

@@ -23,8 +23,9 @@ public class TestOdometry extends OdometryAutonomous
         while (opModeIsActive()&& !isStopRequested())
         {
 
-            driveTo(24,24,0.6);
-            setTheta(0,0.4);
+            //driveTo(24,24,0.6);
+            //setTheta(0,0.4);
+
         }
         idle();
     }

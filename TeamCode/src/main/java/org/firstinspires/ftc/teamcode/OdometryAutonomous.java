@@ -469,9 +469,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double da = 1;
 
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance >1)
+            while (distance >1 && !isStopRequested())
             {
-                while (distance >.9) {
+                while (distance >.9 && !isStopRequested()) {
                     distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                     if (distance < 30) da = 0.4;
                     if (distance < 10)
@@ -511,9 +511,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >1)
+        while (distance >1 && !isStopRequested())
         {
-            while (distance >.9) {
+            while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                 if (distance < 30) da = 0.5;
                 if (distance < 10)
@@ -550,7 +550,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-       while (distance > precision)
+       while (distance > precision && !isStopRequested())
        {
            updateposition();
            alterTheta(target(targetX, targetY));
@@ -569,7 +569,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance > precision)
+        while (distance > precision && !isStopRequested())
         {
             updateposition();
             alterTheta(endDirection);
