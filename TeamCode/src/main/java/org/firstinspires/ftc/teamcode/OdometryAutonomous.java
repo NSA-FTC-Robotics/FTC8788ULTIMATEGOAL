@@ -105,9 +105,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
 
-    BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
-    double                  globalAngle, power = .30, correction;
 
 
 
@@ -149,7 +146,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         backLeft = hardwareMap.get(DcMotor.class, "back_left");
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-       // backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
@@ -159,7 +156,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         backRight = hardwareMap.get(DcMotor.class, "back_right");
         backRight.setDirection(DcMotor.Direction.REVERSE);
-       // backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake1 = hardwareMap.get(DcMotor.class, "Intake1");
@@ -173,19 +170,18 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
         activeWinch.setDirection(DcMotor.Direction.FORWARD);
-        //activeWinch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        activeWinch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        activeWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        leftCollector.setPosition(1);
+        //leftCollector.setPosition(1);
 
         rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        rightCollector.setPosition(0);
+        //rightCollector.setPosition(0);
 
         outake = hardwareMap.get(Servo.class, "outake");
-        outake.setPosition(0.8);
 
         orienter = hardwareMap.get(Servo.class, "orienter");
-        orienter.setPosition(0.2);
 
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber.setPosition(0);
@@ -203,54 +199,27 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         passiveWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        imu.initialize(parameters);
-
-        telemetry.addData("Mode", "calibrating...");
-        telemetry.update();
-
-        // make sure the imu gyro is calibrated before continuing.
-        while (!imu.isGyroCalibrated())
-        {
-
-        }
-
-
     }
 
     // sets initial coordinates of robot
 
     public void openCollector()
     {
-        rightCollector.setPosition(0.4);
+        rightCollector.setPosition(0.45);
         sleep(50);
-        leftCollector.setPosition(0.6);
+        leftCollector.setPosition(0.55);
     }
     public void intakeCollector()
     {
-        rightCollector.setPosition(.25);
         leftCollector.setPosition(0.75);
+        rightCollector.setPosition(0.17);
     }
+
     public void initCoords(double x, double y, double t)
     {
-         fieldX = x;
-         fieldY = y;
-         fieldT = Math.toRadians(t);
+        fieldX = x;
+        fieldY = y;
+        fieldT = Math.toRadians(t);
     }
 
     public double getFieldX()
@@ -337,9 +306,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
         double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>1)
+        if(Math.abs(t-targetTheta)>1 && !isStopRequested())
         {
-            while (Math.abs(t - targetTheta) > .02) {
+            while (Math.abs(t - targetTheta) > .02 && !isStopRequested()) {
                 updateposition();
                 t = Math.toDegrees(fieldT);
 
@@ -418,11 +387,11 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // turns robot to certain angle while moving (turning component of mvmt)
     public void alterTheta(double targetTheta)
     {
-       double p=0.4;
-       if (Math.abs(targetTheta - Math.toDegrees(fieldT))<5)
-           p = 0.2;
-       else if (Math.abs(targetTheta - Math.toDegrees(fieldT))<1.5)
-           p= 0;
+        double p=0.4;
+        if (Math.abs(targetTheta - Math.toDegrees(fieldT))<5)
+            p = 0.2;
+        else if (Math.abs(targetTheta - Math.toDegrees(fieldT))<1.5)
+            p= 0;
         if ((targetTheta < Math.toDegrees(fieldT)) && (targetTheta <= Math.toDegrees(fieldT) - 180)) {
             flta = p;
             frta = -p;
@@ -455,10 +424,10 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double x = Math.cos(direction);
         double y =  Math.sin(direction);
 
-       flma = y+x ;
-       frma = y-x ;
-       blma = y-x ;
-       brma = y+x ;
+        flma = y+x ;
+        frma = y-x ;
+        blma = y-x ;
+        brma = y+x ;
     }
 
     // tells robot to drive to given (x,y) point
@@ -468,39 +437,39 @@ public abstract class OdometryAutonomous extends LinearOpMode
         double distance =0;
         double da = 1;
 
-            distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-            while (distance >1 && !isStopRequested())
-            {
-                while (distance >.9 && !isStopRequested()) {
-                    distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                    if (distance < 30) da = 0.4;
-                    if (distance < 10)
-                    {
-                        //da = 0.25;
-                        if( power>0.5)
-                            power=0.4;
-                    }
-                    updateposition();
-                    alterTheta(target(targetX, targetY));
-                    alterTragectory(target(targetX, targetY));
-                    frontLeft.setPower((flma * power * da) + flta * da);
-                    frontRight.setPower((frma * power * da) + frta * da);
-                    backLeft.setPower((blma * power * da) + blta * da);
-                    backRight.setPower((brma * power * da) + brta * da);
-                    updateposition();
-                }
-                frontLeft.setPower(0);
-                frontRight.setPower(0);
-                backLeft.setPower(0);
-                backRight.setPower(0);
-                updateposition();
+        distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+        while (distance >1 && !isStopRequested())
+        {
+            while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
+                if (distance < 30) da = 0.4;
+                if (distance < 10)
+                {
+                    //da = 0.25;
+                    if( power>0.5)
+                        power=0.4;
+                }
+                updateposition();
+                alterTheta(target(targetX, targetY));
+                alterTragectory(target(targetX, targetY));
+                frontLeft.setPower((flma * power * da) + flta * da);
+                frontRight.setPower((frma * power * da) + frta * da);
+                backLeft.setPower((blma * power * da) + blta * da);
+                backRight.setPower((brma * power * da) + brta * da);
+                updateposition();
             }
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
+            updateposition();
+            distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
+        }
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-            updateposition();
+        updateposition();
     }
 
     // same as driveTo but the robot faces inputed direction once reaches target coordinate
@@ -518,9 +487,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 if (distance < 30) da = 0.5;
                 if (distance < 10)
                 {
-                   da = 0.4;
+                    da = 0.4;
                     if( power>0.5)
-                        power=0.4;
+                        power=0.5;
                 }
                 updateposition();
                 alterTheta(endDirection);
@@ -550,18 +519,18 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-       while (distance > precision && !isStopRequested())
-       {
-           updateposition();
-           alterTheta(target(targetX, targetY));
-           alterTragectory(target(targetX, targetY));
-           frontLeft.setPower((flma * power) + flta);
-           frontRight.setPower((frma * power) + frta);
-           backLeft.setPower((blma * power) + blta);
-           backRight.setPower((brma * power) + brta);
-           updateposition();
-           distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-       }
+        while (distance > precision && !isStopRequested())
+        {
+            updateposition();
+            alterTheta(target(targetX, targetY));
+            alterTragectory(target(targetX, targetY));
+            frontLeft.setPower((flma * power) + flta);
+            frontRight.setPower((frma * power) + frta);
+            backLeft.setPower((blma * power) + blta);
+            backRight.setPower((brma * power) + brta);
+            updateposition();
+            distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
+        }
     }
 
     // ensures robot drives through a certain (x,y) point, does not stop at point, but finishes in angle direction
@@ -618,8 +587,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void suction ()
     {
-        intake1.setPower(-0.3);
-        intake2.setPower(0.3);
+        intake1.setPower(-1);
+        intake2.setPower(1);
     }
 
     public void stopCollector()
@@ -632,4 +601,45 @@ public abstract class OdometryAutonomous extends LinearOpMode
         intake1.setPower(0.5);
         intake2.setPower(-0.5);
     }
+    public  void leftspin()
+    {
+        intake2.setPower(0.5);
+    }
+    public void lift()
+    {
+        activeWinch.setPower(0.4);
+        passiveWinch.setPower(0.4);
+        sleep(400);
+        activeWinch.setPower(0);
+        passiveWinch.setPower(0);
+    }
+    public void lower()
+    {
+        activeWinch.setPower(-0.25);
+        passiveWinch.setPower(-0.25);
+        sleep(400);
+        activeWinch.setPower(0);
+        passiveWinch.setPower(0);
+    }
+    public void backwards(double power, double time)
+    {
+        frontLeft.setPower(-power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(-power);
+        double k = time/100;
+        for(int i = 0; i<k; i++)
+        {
+            sleep(50);
+            updateposition();
+        }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
+
+
+
+
 }
