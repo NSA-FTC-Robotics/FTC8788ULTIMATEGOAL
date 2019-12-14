@@ -26,14 +26,15 @@ public class Blue_Foundation extends OdometryAutonomous
             driveToVector(24,24,0.8,180);
             backwards(0.35,1500);
             lower();
-            driveToVector(24,36,0.8,180);
-            setTheta(90,0.4);
-            driveToVector(24,30,0.8,90);
+            driveToVector(12,24,0.8,180);
+            setTheta(90,0.5);
             lift();
-            driveToVector(12,36,0.8,90);
+            driveToVector(12,48,0.8,90);
             lower();
-            driveToVector(12,72,0.8,90);
-            stop();
+            driveToVector(14,72,0.8,90);
+            openCollector();
+             stop();
+
 
         }
 

@@ -102,7 +102,7 @@ public class DC_Code1920 extends OpMode
         encoderlift.setPosition(0.5);
 
         capstonePlacer = hardwareMap.get(Servo.class, "capstonePlacer");
-        capstonePlacer.setPosition(1);
+        capstonePlacer.setPosition(0);
 
         fieldCentric = false;
         apressed = false;
@@ -189,11 +189,18 @@ public class DC_Code1920 extends OpMode
         rightWheel.setPower(0.3);
     }
 
-    if(gamepad1.a&&gamepad1.left_bumper)
+    if(gamepad1.a&&gamepad1.x)
     {
-        capstonePlacer.setPosition(0.62);
+        capstonePlacer.setPosition(0.4);
     }
-    else capstonePlacer.setPosition(1);
+    if(gamepad1.a&&gamepad1.y)
+        {
+            capstonePlacer.setPosition(0.33);
+        }
+        if(gamepad1.a&&gamepad1.b)
+        {
+            capstonePlacer.setPosition(0);
+        }
     if(gamepad1.y)
     {
         leftWheel.setPower(1);

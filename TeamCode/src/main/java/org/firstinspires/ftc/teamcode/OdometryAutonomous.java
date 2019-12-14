@@ -205,9 +205,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
     public void openCollector()
     {
+        intake1.setPower(0.2);
+        intake2.setPower(-0.2);
         rightCollector.setPosition(0.45);
         sleep(50);
         leftCollector.setPosition(0.55);
+        sleep(400);
+        intake1.setPower(0.0);
+        intake2.setPower(0.0);
     }
     public void intakeCollector()
     {
@@ -587,8 +592,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void suction ()
     {
-        intake1.setPower(-1);
-        intake2.setPower(1);
+        intake1.setPower(-0.2);
+        intake2.setPower(0.2);
     }
 
     public void stopCollector()

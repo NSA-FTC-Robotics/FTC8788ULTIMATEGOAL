@@ -28,8 +28,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@Autonomous(name = "Red 2 Skystones")
-public class Red_Skystone2 extends OdometryAutonomous
+@Autonomous(name = "Red 1 Skystone")
+public class Red_Skystone1 extends OdometryAutonomous
 {
     private static final double ScreenSizeX = 1280;
     private static final double ScreenSizeY = 720;
@@ -105,19 +105,19 @@ public class Red_Skystone2 extends OdometryAutonomous
             suction();
 
             // collects first stone
-            if (FinalSkystonePosition == 0) {
+            if (SkystonePosition == 0) {
                 driveToVector(32, 28, .8, 0);
                 driveToVector(54, 28, .8,0);
                 intakeCollector();
                 driveToVector(32, 28, .8, 0);
-            } else if (FinalSkystonePosition == 1) {
+            } else if (SkystonePosition == 1) {
                 driveToVector(32, 36, .8, 0);
                 driveToVector(52, 36, .8,0);
                 intakeCollector();
                 driveToVector(32, 36, .8, 0);
-            } else if (FinalSkystonePosition == 2) {
+            } else if (SkystonePosition == 2) {
                 driveToVector(32, 44, .8, 0);
-                driveToVector(52, 44, .8, 0); // needs fixing
+                driveToVector(52, 44, .8, 0);
                 intakeCollector();
                 driveToVector(32, 44, .8, 0);
             }
@@ -125,35 +125,14 @@ public class Red_Skystone2 extends OdometryAutonomous
             // drops off first stone
             driveToVector(33, 72, .8, 90);
             driveToVector(33, 80, .8, 90);
-
+            //driveToVector(24, 96, .4, 90);
             spit();
-
-
-
-               // exact same loop, but all target coords are 24 less y
-
-            // collects second stone
-            if (SkystonePosition != 0)
-            {
-                driveToVector(32, 30, .8, 90);
-                if (SkystonePosition == 1) {
-                    driveToVector(32, 12, .8, 0);
-                    driveToVector(52, 12, .8, 0);
-                    driveToVector(32, 12, .8, 0);
-                } else {
-                    driveToVector(32, 20, .8, 0);
-                    driveToVector(52, 20, .8, 0);
-                    driveToVector(32, 20, .8, 0);
-                }
-
-                driveToVector(30, 72, .8, 270);
-                driveToVector(30, 96, .8, 270);
-            }
             driveToVector(28, 72, .8, 0);       // park
-                stop();
-            }
 
+            stop();
         }
+
+    }
 
 
     private void initVuforia() {
@@ -207,11 +186,11 @@ public class Red_Skystone2 extends OdometryAutonomous
                 else // if it sees two objects and the skystone is not on the right, then the skystone must be on the left
                     SkystonePosition = 0; //left stone
             }
-            }
-
-
         }
+
+
     }
+}
 
 
 

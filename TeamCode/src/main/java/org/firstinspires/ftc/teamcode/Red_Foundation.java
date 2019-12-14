@@ -26,15 +26,14 @@ public class Red_Foundation extends OdometryAutonomous
             driveToVector(24,120,0.8,180);
             backwards(0.35,1500);
             lower();
-            driveToVector(24,108,0.8,180);
-            setTheta(90,0.4);
-            driveToVector(24,114,0.8,270);
+            driveToVector(12,120,0.8,180);
+            setTheta(270,0.5);
             lift();
-            driveToVector(12,108,0.8,270);
+            driveToVector(12,96,0.8,270);
             lower();
-            driveToVector(12,72,0.8,270);
+            driveToVector(14,72,0.8,270);
+            openCollector();
             stop();
-
         }
 
     }
