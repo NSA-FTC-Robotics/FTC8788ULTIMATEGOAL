@@ -135,7 +135,7 @@ public class Red_Skystone2 extends OdometryAutonomous
             // collects second stone
             if (SkystonePosition != 0)
             {
-                driveToVector(32, 30, .8, 90);
+                driveToVector(32, 30, 1, 90);
                 if (SkystonePosition == 1) {
                     driveToVector(32, 12, .8, 0);
                     driveToVector(52, 12, .8, 0);
@@ -146,10 +146,11 @@ public class Red_Skystone2 extends OdometryAutonomous
                     driveToVector(32, 20, .8, 0);
                 }
 
-                driveToVector(30, 72, .8, 270);
-                driveToVector(30, 96, .8, 270);
+                driveToVector(33, 72, .8, 90);
+                driveToVector(33, 96, .8, 90);
+                spit();
             }
-            driveToVector(28, 72, .8, 0);       // park
+            driveToVector(28, 72, .8, 90);       // park
                 stop();
             }
 

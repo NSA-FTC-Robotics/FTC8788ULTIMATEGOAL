@@ -127,7 +127,7 @@ public class Red_Skystone1 extends OdometryAutonomous
             driveToVector(33, 80, .8, 90);
             //driveToVector(24, 96, .4, 90);
             spit();
-            driveToVector(28, 72, .8, 0);       // park
+            driveToVector(28, 72, .8, 90);       // park
 
             stop();
         }
