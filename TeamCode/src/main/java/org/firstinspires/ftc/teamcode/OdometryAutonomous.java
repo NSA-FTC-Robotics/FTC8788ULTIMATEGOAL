@@ -470,7 +470,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // same as driveTo but the robot faces inputed direction once reaches target coordinate
     public void driveToVector (double targetX, double targetY, double power, double endDirection)
     {
-        double distance =0;
+        double distance;
         double da = 1;
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
@@ -479,20 +479,16 @@ public abstract class OdometryAutonomous extends LinearOpMode
         {
             while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                if (distance < 30) da = 0.5;
-                if (distance < 10)
-                {
-                   da = 0.4;
-                    if( power>0.5)
-                        power=0.5;
-                }
+                if(distance < 20)
+                da = Math.abs(((distance / 20)  * .8) + .2);
+
                 updateposition();
                 alterTheta(endDirection);
                 alterTragectory(target(targetX, targetY));
-                frontLeft.setPower((flma * power * da) + flta * da);
-                frontRight.setPower((frma * power * da) + frta * da);
-                backLeft.setPower((blma * power * da) + blta * da);
-                backRight.setPower((brma * power * da) + brta * da);
+                frontLeft.setPower((flma * power * da) + (flta * power * da));
+                frontRight.setPower((frma * power * da) + (frta * power * da));
+                backLeft.setPower((blma * power * da) + (blta * power * da));
+                backRight.setPower((brma * power * da) + (brta * power * da));
                 updateposition();
             }
             frontLeft.setPower(0);
@@ -531,6 +527,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // ensures robot drives through a certain (x,y) point, does not stop at point, but finishes in angle direction
     public void waypointVector(double targetX, double targetY, double power, double precision, double endDirection)
     {
+
         double distance =0;
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
         while (distance > precision && !isStopRequested())
@@ -545,6 +542,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
             updateposition();
             distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
         }
+
+
     }
 
     private void initVuforia() {

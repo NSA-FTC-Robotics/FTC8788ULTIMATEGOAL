@@ -20,12 +20,13 @@ public class BasicBlueBridge extends OdometryAutonomous
     public void runOpMode()
     {
         setConfig();
-        initCoords(12,60,90);
+        initCoords(0,0,0);
         waitForStart();
         if (opModeIsActive())
         {
 
-            driveToVector(36,72,0.8,90);
+            //driveToVector(36,72,0.8,90);
+            driveToVector(24,24,.5, 0);
 
         }
     }

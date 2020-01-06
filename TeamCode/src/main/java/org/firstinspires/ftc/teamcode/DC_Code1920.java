@@ -190,6 +190,7 @@ public class DC_Code1920 extends OpMode
         capstonePlacer.setPosition(0.62);
     }
     else capstonePlacer.setPosition(1);
+
     if(gamepad1.y)
     {
         leftWheel.setPower(1);
