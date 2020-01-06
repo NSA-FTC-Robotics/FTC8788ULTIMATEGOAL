@@ -33,6 +33,7 @@ public class Blue_Foundation extends OdometryAutonomous
             lower();
             driveToVector(14,72,0.8,90);
             openCollector();
+            sleep(1000);
              stop();
 
 

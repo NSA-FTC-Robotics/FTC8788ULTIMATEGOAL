@@ -311,7 +311,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double num = 15;
         double  t = Math.toDegrees(fieldT);
-        if(Math.abs(t-targetTheta)>1 && !isStopRequested())
+        if(Math.abs(t-targetTheta)>5 && !isStopRequested())
         {
             while (Math.abs(t - targetTheta) > .02 && !isStopRequested()) {
                 updateposition();
