@@ -50,6 +50,7 @@ public class DC_Code1920 extends OpMode
     private boolean fieldCentric;
     private boolean winchMode;
     private boolean clawposition;
+    private double targetHeight;
 
     private final double ticksPerLevel = 342.2467;
 
@@ -85,6 +86,8 @@ public class DC_Code1920 extends OpMode
         activeWinch = hardwareMap.get(DcMotor.class, "activeWinch");
         activeWinch.setDirection(DcMotor.Direction.FORWARD);
         activeWinch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        activeWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        activeWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftCollector = hardwareMap.get(Servo.class, "left_collector");
         //leftCollector.setPosition(1);
@@ -261,12 +264,62 @@ public class DC_Code1920 extends OpMode
             winchMode = true;
         }
 
-        //if(Math.abs(gamepad2.right_stick_y)>0.05)
-
-            winchMode = false;
-
-            activeWinch.setPower(gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
-            passiveWinch.setPower(gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
+        if(Math.abs(gamepad2.right_stick_y)>0.05) winchMode = false;
+        if(gamepad2.left_trigger>0.05||gamepad2.right_trigger>0.05|| gamepad2.left_stick_x>0.05) winchMode = true;
+           if (winchMode)
+           {
+               if(gamepad2.left_trigger>0.05&&!clawposition)
+               {
+                   targetHeight = 500;
+                   outake.setPosition(0.02);
+                   orienter.setPosition(0);
+               }
+               else if (gamepad2.right_trigger>0.05&&!clawposition)
+               {
+                   targetHeight = 0;
+                   outake.setPosition(0.02);
+                   orienter.setPosition(0);
+               }
+               else if(gamepad2.left_stick_x>0.05)
+               { targetHeight = 0;
+                    outake.setPosition(0.19);
+                    orienter.setPosition(0.178);}
+               int currentHeight = activeWinch.getCurrentPosition();
+               if (Math.abs(targetHeight-currentHeight)<5)
+               {
+                   activeWinch.setPower(0);
+                   passiveWinch.setPower(0);
+               }
+               else if (targetHeight-currentHeight < 1000 && targetHeight-currentHeight > 0)
+               {
+                   activeWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
+                   passiveWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
+               }
+               else if (targetHeight-currentHeight > 1000 && targetHeight-currentHeight < 0)
+               {
+                   activeWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
+                   passiveWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
+               }
+               else if (targetHeight > currentHeight)
+               {
+                   activeWinch.setPower(-.2);
+                   passiveWinch.setPower(-.2);
+               }
+               else if (targetHeight < currentHeight)
+               {
+                   activeWinch.setPower(.2);
+                   passiveWinch.setPower(.2);
+               }
+               else
+               {
+                   telemetry.addData("error", 69);
+                   telemetry.update();
+               }
+           }
+           else {
+               activeWinch.setPower(gamepad2.right_stick_y * (1 - 0.5 * gamepad2.left_trigger));
+               passiveWinch.setPower(gamepad2.right_stick_y * (1 - 0.5 * gamepad2.left_trigger));
+           }
 
 
        /* if(winchMode)
@@ -296,7 +349,7 @@ public class DC_Code1920 extends OpMode
 
         if(gamepad2.right_bumper) {
             orienter.setPosition(.355);
-            outake.setPosition(0.71);
+            outake.setPosition(0.72);
             clawposition = true;
         }
         if(gamepad2.y) // alternate scoring position
