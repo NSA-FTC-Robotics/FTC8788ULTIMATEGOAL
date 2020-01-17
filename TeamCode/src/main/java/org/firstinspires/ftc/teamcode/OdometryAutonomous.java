@@ -187,7 +187,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         grabber.setPosition(0);
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
-        encoderlift.setPosition(0.7); // needs testing
+        encoderlift.setPosition(0.3); // needs testing
 
 
 
@@ -489,13 +489,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
         {
             while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                if (distance < 30) da = 0.5;
-                if (distance < 10)
-                {
-                    da = 0.4;
-                    if( power>0.5)
-                        power=0.5;
-                }
+                if (distance < 20) da = (0.8*Math.pow(distance/20,2)+0.2);
+
                 updateposition();
                 alterTheta(endDirection);
                 alterTragectory(target(targetX, targetY));

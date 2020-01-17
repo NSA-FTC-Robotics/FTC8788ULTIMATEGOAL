@@ -46,6 +46,7 @@ public class DC_Code1920 extends OpMode
     private boolean apressed;
     private double speed;
     private double driveangle;
+    private double normal;
     private boolean fieldCentric;
     private boolean winchMode;
     private boolean clawposition;
@@ -153,13 +154,15 @@ public class DC_Code1920 extends OpMode
         driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         telemetry.addData("DriveAngle", driveangle);
+        if(Math.sin(driveangle)>Math.cos(driveangle)) normal = 1/(Math.sin(driveangle));
+        else normal = 1/(Math.cos(driveangle));
 
         if (fieldCentric)
         {
-            frontLeft.setPower((Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
-            frontRight.setPower((Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
-            backLeft.setPower((Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
-            backRight.setPower((Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
+            frontLeft.setPower(normal *(Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
+            frontRight.setPower(normal *(Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
+            backLeft.setPower(normal *(Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
+            backRight.setPower(normal *(Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
         }
         else
         {
@@ -182,11 +185,6 @@ public class DC_Code1920 extends OpMode
         //collector open
         leftCollector.setPosition(0.6);
         rightCollector.setPosition(0.4);
-    }
-    if(gamepad1.left_bumper)
-    {
-        leftWheel.setPower(-0.3);
-        rightWheel.setPower(0.3);
     }
 
     if(gamepad1.a&&gamepad1.x)
@@ -266,13 +264,10 @@ public class DC_Code1920 extends OpMode
         //if(Math.abs(gamepad2.right_stick_y)>0.05)
 
             winchMode = false;
-        if (gamepad2.right_stick_y<0) {
-            activeWinch.setPower(-gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
-            passiveWinch.setPower(-gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
-        }
-        else
-            activeWinch.setPower((-gamepad2.right_stick_y * 0.5)*(1-0.5*gamepad2.left_trigger));
-        passiveWinch.setPower((-gamepad2.right_stick_y * 0.5)*(1-0.5*gamepad2.left_trigger));
+
+            activeWinch.setPower(gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
+            passiveWinch.setPower(gamepad2.right_stick_y *(1-0.5*gamepad2.left_trigger));
+
 
        /* if(winchMode)
         {
@@ -301,24 +296,24 @@ public class DC_Code1920 extends OpMode
 
         if(gamepad2.right_bumper) {
             orienter.setPosition(.355);
-            outake.setPosition(0.29);
+            outake.setPosition(0.71);
             clawposition = true;
         }
         if(gamepad2.y) // alternate scoring position
         {
-           outake.setPosition(0.29);
+
             orienter.setPosition(0);
         }
 
         if(gamepad2.left_bumper)
         {
             orienter.setPosition(0.355);
-            outake.setPosition(1);
+            outake.setPosition(0.02);
             clawposition = false;
         }
         if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper)
         {
-            outake.setPosition(1);
+            outake.setPosition(0.02);
             orienter.setPosition(0);
         }
 
