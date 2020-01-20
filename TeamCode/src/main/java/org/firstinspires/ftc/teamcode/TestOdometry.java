@@ -23,7 +23,7 @@ public class TestOdometry extends OdometryAutonomous
         while (opModeIsActive()&& !isStopRequested())
         {
 
-          driveToVector(12,12,0.8,0);
+
 
         }
 

@@ -394,7 +394,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double p=0.4;
         if (Math.abs(targetTheta - Math.toDegrees(fieldT))<5)
-            p = 0.1;
+            p = 0.2;
         else if (Math.abs(targetTheta - Math.toDegrees(fieldT))<1.5)
             p= 0;
         if ((targetTheta < Math.toDegrees(fieldT)) && (targetTheta <= Math.toDegrees(fieldT) - 180)) {
@@ -482,7 +482,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >1 && !isStopRequested())
+        while (distance >1 && Math.abs(endDirection-fieldT)>2&& !isStopRequested())
         {
             while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
@@ -491,10 +491,10 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 updateposition();
                 alterTheta(endDirection);
                 alterTragectory(target(targetX, targetY));
-                frontLeft.setPower((flma * power * da) + flta * da);
-                frontRight.setPower((frma * power * da) + frta * da);
-                backLeft.setPower((blma * power * da) + blta * da);
-                backRight.setPower((brma * power * da) + brta * da);
+                frontLeft.setPower((flma * power * da) + flta );
+                frontRight.setPower((frma * power * da) + frta );
+                backLeft.setPower((blma * power * da) + blta );
+                backRight.setPower((brma * power * da) + brta );
                 updateposition();
             }
             frontLeft.setPower(0);
@@ -602,22 +602,41 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         intake2.setPower(0.5);
     }
-    public void lift()
+    public void lift( double targetHeight)
     {
-        activeWinch.setPower(0.4);
-        passiveWinch.setPower(0.4);
-        sleep(400);
-        activeWinch.setPower(0);
-        passiveWinch.setPower(0);
+        double currentHeight = activeWinch.getCurrentPosition()+300;
+        if (Math.abs(targetHeight-currentHeight)<10)
+        {
+            activeWinch.setPower(0);
+            passiveWinch.setPower(0);
+        }
+        else if (targetHeight-currentHeight < 1000 && targetHeight-currentHeight > 0)
+        {
+            activeWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
+            passiveWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
+        }
+        else if (targetHeight-currentHeight > 1000 && targetHeight-currentHeight < 0)
+        {
+            activeWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
+            passiveWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
+        }
+        else if (targetHeight > currentHeight)
+        {
+            activeWinch.setPower(-.2);
+            passiveWinch.setPower(-.2);
+        }
+        else if (targetHeight < currentHeight)
+        {
+            activeWinch.setPower(.2);
+            passiveWinch.setPower(.2);
+        }
+        else
+        {
+            telemetry.addData("error", 69);
+            telemetry.update();
+        }
     }
-    public void lower()
-    {
-        activeWinch.setPower(-0.25);
-        passiveWinch.setPower(-0.25);
-        sleep(400);
-        activeWinch.setPower(0);
-        passiveWinch.setPower(0);
-    }
+
     public void backwards(double power, double time)
     {
         frontLeft.setPower(-power);
@@ -634,6 +653,14 @@ public abstract class OdometryAutonomous extends LinearOpMode
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+    }
+    public void grab()
+    {
+
+    }
+    public void release()
+    {
+
     }
 
 

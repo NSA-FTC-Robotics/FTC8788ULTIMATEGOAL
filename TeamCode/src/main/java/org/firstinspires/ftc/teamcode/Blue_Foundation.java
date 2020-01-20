@@ -22,15 +22,15 @@ public class Blue_Foundation extends OdometryAutonomous
         waitForStart();
         while (opModeIsActive()&& !isStopRequested())
         {
-            lift();
+            //lift();
             driveToVector(24,24,0.8,180);
             backwards(0.35,1500);
-            lower();
+
             driveToVector(12,24,0.8,180);
             setTheta(90,0.5);
-            lift();
+            //lift();
             driveToVector(12,48,0.8,90);
-            lower();
+
             driveToVector(14,72,0.8,90);
             openCollector();
             sleep(1000);
