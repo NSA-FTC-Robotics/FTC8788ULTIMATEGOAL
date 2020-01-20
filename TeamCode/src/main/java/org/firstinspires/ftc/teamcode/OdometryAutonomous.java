@@ -394,7 +394,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
     {
         double p=0.4;
         if (Math.abs(targetTheta - Math.toDegrees(fieldT))<5)
-            p = 0.2;
+            p = 0.1;
         else if (Math.abs(targetTheta - Math.toDegrees(fieldT))<1.5)
             p= 0;
         if ((targetTheta < Math.toDegrees(fieldT)) && (targetTheta <= Math.toDegrees(fieldT) - 180)) {
@@ -447,13 +447,10 @@ public abstract class OdometryAutonomous extends LinearOpMode
         {
             while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
-                if (distance < 30) da = 0.4;
-                if (distance < 10)
-                {
-                    //da = 0.25;
-                    if( power>0.5)
-                        power=0.4;
-                }
+               if(distance<20)
+               {
+                   da = (Math.pow((distance/20),2) *0.8)+0.2;
+               }
                 updateposition();
                 alterTheta(target(targetX, targetY));
                 alterTragectory(target(targetX, targetY));

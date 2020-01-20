@@ -18,15 +18,12 @@ public class TestOdometry extends OdometryAutonomous
     {
 
         setConfig();
-       initCoords(12,12,0);
+       initCoords(0,0,0);
         waitForStart();
         while (opModeIsActive()&& !isStopRequested())
         {
 
-           lift();
-           sleep(2000);
-           lower();
-            stop();
+          driveToVector(12,12,0.8,0);
 
         }
 
