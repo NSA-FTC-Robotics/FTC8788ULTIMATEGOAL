@@ -74,8 +74,9 @@ public class Blue_Skystone2 extends OdometryAutonomous
 
     public void runOpMode() {
         setConfig();
-        initCoords(8.75, 105, 270);
+        initCoords(8.75, 105, 90);
         initVuforia();
+        release();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -93,16 +94,31 @@ public class Blue_Skystone2 extends OdometryAutonomous
 
         while (!opModeIsActive() && !isStopRequested())
         {
-            getSkystoneVars();
-            telemetry.addData("SkystonePosition", SkystonePosition);
+            SkystonePosition = 0;
+            sleep(800);
+            telemetry.addData("Beep-bop", SkystonePosition);
             telemetry.update();
+           if(!opModeIsActive()) {
+               SkystonePosition = 1;
+               sleep(800);
+               telemetry.addData("Beep-bop", SkystonePosition);
+               telemetry.update();
+               if(!opModeIsActive()) {
+                   SkystonePosition = 2;
+                   sleep(800);
+                   telemetry.addData("Beep-bop", SkystonePosition);
+                   telemetry.update();
+               }
+           }
         }
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             FinalSkystonePosition = SkystonePosition;
+            telemetry.addData("Position", SkystonePosition);
+            telemetry.update();
             openCollector();
-            suction();
+
 
             // collects first stone
             if (FinalSkystonePosition == 0) {
@@ -115,7 +131,7 @@ public class Blue_Skystone2 extends OdometryAutonomous
                 driveToVector(52, 108, .8,0);
                 intakeCollector();
                 driveToVector(32, 108, .8, 0);
-            } else if (FinalSkystonePosition == 2) {
+            } else {
                 driveToVector(32, 116, .8, 0);
                 driveToVector(52, 116, .8, 0);
                 intakeCollector();
@@ -123,8 +139,10 @@ public class Blue_Skystone2 extends OdometryAutonomous
             }
 
             // drops off first stone
-            driveToVector(33, 72, .8, 270);
+           /* driveToVector(33, 72, .8, 270);
             driveToVector(33, 64, .8, 270);
+
+            */
 
             spit();
 
@@ -133,7 +151,7 @@ public class Blue_Skystone2 extends OdometryAutonomous
             // exact same loop, but all target coords are 24 less y
 
             // collects second stone
-            if (SkystonePosition != 2)
+          /*  if (SkystonePosition != 2)
             {
                 driveToVector(32, 114, 1, 270);
                 if (SkystonePosition == 1) {
@@ -150,6 +168,8 @@ public class Blue_Skystone2 extends OdometryAutonomous
                 driveToVector(33, 96, .8, 270);
                 spit();
             }
+
+           */
             driveToVector(28, 72, .8, 270);       // park
             stop();
         }

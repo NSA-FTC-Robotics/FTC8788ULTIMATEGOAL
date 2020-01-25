@@ -211,8 +211,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         sleep(50);
         leftCollector.setPosition(0.55);
         sleep(400);
-        intake1.setPower(0.0);
-        intake2.setPower(0.0);
+
     }
     public void intakeCollector()
     {
@@ -604,37 +603,43 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void lift( double targetHeight)
     {
-        double currentHeight = activeWinch.getCurrentPosition()+300;
-        if (Math.abs(targetHeight-currentHeight)<10)
+        int currentHeight = activeWinch.getCurrentPosition();
+        while (Math.abs(targetHeight-currentHeight)>10)
         {
-            activeWinch.setPower(0);
-            passiveWinch.setPower(0);
+             currentHeight = activeWinch.getCurrentPosition();
+            if (Math.abs(targetHeight-currentHeight)<5)
+            {
+                activeWinch.setPower(0);
+                passiveWinch.setPower(0);
+            }
+            else if (targetHeight-currentHeight < 1000 && targetHeight-currentHeight > 0)
+            {
+                activeWinch.setPower(-1*(0.9*((Math.abs(targetHeight-currentHeight))/1000)+0.1));
+                passiveWinch.setPower(-1*(0.9*((Math.abs(targetHeight-currentHeight))/1000)+0.1));
+            }
+            else if (targetHeight-currentHeight > 1000 && targetHeight-currentHeight < 0)
+            {
+                activeWinch.setPower(1*(0.7*((Math.abs(targetHeight-currentHeight))/1000)+0.4));
+                passiveWinch.setPower(1*(0.7*((Math.abs(targetHeight-currentHeight))/1000)+0.4));
+            }
+            else if (targetHeight > currentHeight)
+            {
+                activeWinch.setPower(-1);
+                passiveWinch.setPower(-1);
+            }
+            else if (targetHeight < currentHeight)
+            {
+                activeWinch.setPower(1);
+                passiveWinch.setPower(1);
+            }
+            else
+            {
+                telemetry.addData("error", 69);
+                telemetry.update();
+            }
         }
-        else if (targetHeight-currentHeight < 1000 && targetHeight-currentHeight > 0)
-        {
-            activeWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
-            passiveWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
-        }
-        else if (targetHeight-currentHeight > 1000 && targetHeight-currentHeight < 0)
-        {
-            activeWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
-            passiveWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
-        }
-        else if (targetHeight > currentHeight)
-        {
-            activeWinch.setPower(-.2);
-            passiveWinch.setPower(-.2);
-        }
-        else if (targetHeight < currentHeight)
-        {
-            activeWinch.setPower(.2);
-            passiveWinch.setPower(.2);
-        }
-        else
-        {
-            telemetry.addData("error", 69);
-            telemetry.update();
-        }
+        activeWinch.setPower(0);
+        passiveWinch.setPower(0);
     }
 
     public void backwards(double power, double time)
@@ -656,11 +661,19 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void grab()
     {
-
+        activeWinch.setPower(0.25);
+        passiveWinch.setPower(0.25);
+        sleep(300);
+        activeWinch.setPower(0);
+        passiveWinch.setPower(0);
     }
     public void release()
     {
-
+        activeWinch.setPower(-0.5);
+        passiveWinch.setPower(-0.5);
+        sleep(300);
+        activeWinch.setPower(0);
+        passiveWinch.setPower(0);
     }
 
 

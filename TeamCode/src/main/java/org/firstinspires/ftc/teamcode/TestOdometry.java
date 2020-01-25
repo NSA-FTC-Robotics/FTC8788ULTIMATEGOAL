@@ -22,6 +22,10 @@ public class TestOdometry extends OdometryAutonomous
         waitForStart();
         while (opModeIsActive()&& !isStopRequested())
         {
+         release();
+         sleep(2000);
+         grab();
+         stop();
 
 
 

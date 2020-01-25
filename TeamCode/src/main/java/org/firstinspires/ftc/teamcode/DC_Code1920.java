@@ -292,23 +292,23 @@ public class DC_Code1920 extends OpMode
                }
                else if (targetHeight-currentHeight < 1000 && targetHeight-currentHeight > 0)
                {
-                   activeWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
-                   passiveWinch.setPower(-.005*(Math.abs(targetHeight-currentHeight)));
+                   activeWinch.setPower(-1*(0.9*((Math.abs(targetHeight-currentHeight))/1000)+0.1));
+                   passiveWinch.setPower(-1*(0.9*((Math.abs(targetHeight-currentHeight))/1000)+0.1));
                }
                else if (targetHeight-currentHeight > 1000 && targetHeight-currentHeight < 0)
                {
-                   activeWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
-                   passiveWinch.setPower(.005*(Math.abs(targetHeight-currentHeight)));
+                   activeWinch.setPower(1*(0.7*((Math.abs(targetHeight-currentHeight))/1000)+0.3));
+                   passiveWinch.setPower(1*(0.7*((Math.abs(targetHeight-currentHeight))/1000)+0.3));
                }
                else if (targetHeight > currentHeight)
                {
-                   activeWinch.setPower(-.2);
-                   passiveWinch.setPower(-.2);
+                   activeWinch.setPower(-1);
+                   passiveWinch.setPower(-1);
                }
                else if (targetHeight < currentHeight)
                {
-                   activeWinch.setPower(.2);
-                   passiveWinch.setPower(.2);
+                   activeWinch.setPower(1);
+                   passiveWinch.setPower(1);
                }
                else
                {
