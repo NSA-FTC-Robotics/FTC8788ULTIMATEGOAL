@@ -476,12 +476,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
     // same as driveTo but the robot faces inputed direction once reaches target coordinate
     public void driveToVector (double targetX, double targetY, double power, double endDirection)
     {
-        double distance =0;
+        double distance;
         double da = 1;
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
-        while (distance >1 && Math.abs(endDirection-fieldT)>2&& !isStopRequested())
+        while (distance >1 && !isStopRequested())
         {
             while (distance >.9 && !isStopRequested()) {
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));

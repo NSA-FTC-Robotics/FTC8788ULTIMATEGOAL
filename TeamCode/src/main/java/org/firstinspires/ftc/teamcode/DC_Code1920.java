@@ -31,13 +31,10 @@ public class DC_Code1920 extends OpMode
     private DcMotor rightWheel;
     private DcMotor passiveWinch; //port 2
     private DcMotor activeWinch; //port 3
-    private Servo leftCollector;
-    private Servo rightCollector;
     private Servo outake;
     private Servo orienter;
     private Servo grabber;
     private Servo encoderlift;
-    private Servo capstonePlacer;
 
     private double towerHeight = 0; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
@@ -51,6 +48,24 @@ public class DC_Code1920 extends OpMode
     private boolean winchMode;
     private boolean clawposition;
     private double targetHeight;
+    private boolean stoneangle;
+
+    //outake positions
+
+    private double out = 0.72;
+    private double in = 0.03;
+    private double side = 0.19;
+    private double rightout = 0.8;
+    private double leftout = 0.64;
+
+    //orienter positions
+
+    private double parallel = 0.02;
+    private double perpendicular = .355;
+    private double sideangle = 0.178;
+    private double rightoutangle;
+    private double leftoutangle;
+
 
     private final double ticksPerLevel = 342.2467;
 
@@ -89,11 +104,6 @@ public class DC_Code1920 extends OpMode
         activeWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         activeWinch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        //leftCollector.setPosition(1);
-
-        rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        //rightCollector.setPosition(0);
 
         outake = hardwareMap.get(Servo.class, "outake");
 
@@ -104,9 +114,6 @@ public class DC_Code1920 extends OpMode
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
-
-        capstonePlacer = hardwareMap.get(Servo.class, "capstonePlacer");
-        capstonePlacer.setPosition(0);
 
         fieldCentric = false;
         apressed = false;
@@ -176,32 +183,6 @@ public class DC_Code1920 extends OpMode
         }
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
-    if(gamepad1.right_bumper)
-    {
-        //collector in
-        leftCollector.setPosition(0.75);
-        rightCollector.setPosition(0.17);
-
-    }
-    else
-    {
-        //collector open
-        leftCollector.setPosition(0.6);
-        rightCollector.setPosition(0.4);
-    }
-
-    if(gamepad1.a&&gamepad1.x)
-    {
-        capstonePlacer.setPosition(0.4);
-    }
-    if(gamepad1.a&&gamepad1.y)
-        {
-            capstonePlacer.setPosition(0.33);
-        }
-        if(gamepad1.a&&gamepad1.b)
-        {
-            capstonePlacer.setPosition(0);
-        }
     if(gamepad1.y)
     {
         leftWheel.setPower(1);
@@ -209,81 +190,52 @@ public class DC_Code1920 extends OpMode
     }
     if(gamepad1.b)
         {
-            leftWheel.setPower(-1);
-            rightWheel.setPower(1);
+            leftWheel.setPower(-0.8);
+            rightWheel.setPower(0.8);
         }
     if(gamepad1.x)
         {
             leftWheel.setPower(0);
             rightWheel.setPower(0);
         }
-    if(gamepad1.a && gamepad1.b && !apressed)
-    {
-        if(fieldCentric)
-        {
-            fieldCentric = false;
-        }
-        else fieldCentric = true;
-        apressed = true;
-    }
-    if(!gamepad1.a||!gamepad1.b)apressed=false;
+   if(gamepad1.a)
+   {
+       leftWheel.setPower(0.3);
+       rightWheel.setPower(-0.3);
+   }
+
 
 //Gamepad 2
 
 
 
-        if (!gamepad2.dpad_up)
-        {
-            upPressed = true;
 
-        }
-        if (!gamepad2.dpad_down)
+        if(gamepad2.left_stick_x>0.05)
         {
-            downPressed = true;
-
-        }
-
-        if (gamepad2.dpad_up)
-        {
-            incrementTower();
-
-        }
-        if (gamepad2.dpad_down)
-        {
-            decrementTower();
-
-        }
-        if (gamepad2.dpad_right)
-        {
-            //target = tower height
-            winchMode = true;
-        }
-        if (gamepad2.dpad_left)
-        {
-            //target = 1
-            winchMode = true;
+            outake.setPosition(side);
+            orienter.setPosition(sideangle);
         }
 
         if(Math.abs(gamepad2.right_stick_y)>0.05) winchMode = false;
-        if(gamepad2.left_trigger>0.05||gamepad2.right_trigger>0.05|| gamepad2.left_stick_x>0.05) winchMode = true;
+       // if(gamepad2.left_trigger>0.05||gamepad2.right_trigger>0.05|| gamepad2.left_stick_x>0.05) winchMode = true;
            if (winchMode)
            {
                if(gamepad2.left_trigger>0.05&&!clawposition)
                {
                    targetHeight = 500;
                    outake.setPosition(0.02);
-                   orienter.setPosition(0);
+                   orienter.setPosition(0.03);
                }
                else if (gamepad2.right_trigger>0.05&&!clawposition)
                {
                    targetHeight = 0;
                    outake.setPosition(0.02);
-                   orienter.setPosition(0);
+                   orienter.setPosition(0.03);
                }
                else if(gamepad2.left_stick_x>0.05)
-               { targetHeight = 0;
-                    outake.setPosition(0.19);
-                    orienter.setPosition(0.178);}
+               {
+                    outake.setPosition(side);
+                    orienter.setPosition(sideangle);}
                int currentHeight = activeWinch.getCurrentPosition();
                if (Math.abs(targetHeight-currentHeight)<5)
                {
@@ -322,53 +274,53 @@ public class DC_Code1920 extends OpMode
            }
 
 
-       /* if(winchMode)
-        {
-            activeWinch.setTargetPosition((int)((towerHeight)*ticksPerLevel));
-            double winchpower = (0.5*((activeWinch.getTargetPosition()-activeWinch.getCurrentPosition())*0.01+0.2));
 
-            if(activeWinch.getCurrentPosition()<activeWinch.getTargetPosition())
-            {
-                activeWinch.setPower(winchpower);
-                passiveWinch.setPower(winchpower);
-            }
-            if(activeWinch.getCurrentPosition()>activeWinch.getTargetPosition())
-            {
-                activeWinch.setPower(-winchpower);
-                passiveWinch.setPower(-winchpower);
-            }
-        }
-
-        */
-        if (gamepad2.x)
-        {
-            towerHeight = 0;
-            winchMode = true;
-        }
 
 
         if(gamepad2.right_bumper) {
-            orienter.setPosition(.355);
-            outake.setPosition(0.72);
+            orienter.setPosition(perpendicular);
+            outake.setPosition(out);
             clawposition = true;
+            stoneangle = false;
         }
         if(gamepad2.y) // alternate scoring position
         {
 
-            orienter.setPosition(0);
+            orienter.setPosition(parallel);
+            if(clawposition)
+                stoneangle = true;
         }
 
         if(gamepad2.left_bumper)
         {
-            orienter.setPosition(0.355);
-            outake.setPosition(0.02);
+            orienter.setPosition(perpendicular);
+            outake.setPosition(in);
             clawposition = false;
         }
-        if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper)
+        if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper&&!(gamepad2.left_stick_x>0.05))
         {
-            outake.setPosition(0.02);
-            orienter.setPosition(0);
+            outake.setPosition(in);
+            orienter.setPosition(parallel);
         }
+
+        //Arm manuverability
+
+        if(clawposition)
+        {
+            if(stoneangle)
+            {
+                while(outake.getPosition()>leftout&&outake.getPosition()<rightout)
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+
 
         if (gamepad2.a)
             grabber.setPosition(0.3);

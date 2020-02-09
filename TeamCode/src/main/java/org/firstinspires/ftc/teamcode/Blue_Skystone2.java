@@ -115,61 +115,16 @@ public class Blue_Skystone2 extends OdometryAutonomous
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             FinalSkystonePosition = SkystonePosition;
-            telemetry.addData("Position", SkystonePosition);
+            telemetry.addData("Position", FinalSkystonePosition);
             telemetry.update();
             openCollector();
 
 
             // collects first stone
-            if (FinalSkystonePosition == 0) {
-                driveToVector(32, 100, .8, 0);
-                driveToVector(54, 100, .8,0);
-                intakeCollector();
-                driveToVector(32, 100, .8, 0);
-            } else if (FinalSkystonePosition == 1) {
-                driveToVector(32, 108, .8, 0);
-                driveToVector(52, 108, .8,0);
-                intakeCollector();
-                driveToVector(32, 108, .8, 0);
-            } else {
-                driveToVector(32, 116, .8, 0);
-                driveToVector(52, 116, .8, 0);
-                intakeCollector();
-                driveToVector(32, 116, .8, 0);
-            }
-
-            // drops off first stone
-           /* driveToVector(33, 72, .8, 270);
-            driveToVector(33, 64, .8, 270);
-
-            */
-
-            spit();
-
-
-
-            // exact same loop, but all target coords are 24 less y
-
-            // collects second stone
-          /*  if (SkystonePosition != 2)
-            {
-                driveToVector(32, 114, 1, 270);
-                if (SkystonePosition == 1) {
-                    driveToVector(32, 132, .8, 0);
-                    driveToVector(52, 132, .8, 0);
-                    driveToVector(32, 132, .8, 0);
-                } else {
-                    driveToVector(32, 124, .8, 0);
-                    driveToVector(52, 124, .8, 0);
-                    driveToVector(32, 124, .8, 0);
-                }
-
-                driveToVector(33, 72, .8, 270);
-                driveToVector(33, 96, .8, 270);
-                spit();
-            }
-
-           */
+            driveToVector(32, 108, .8, 0);
+            driveToVector(52, 108, .8,0);
+            intakeCollector();
+            driveToVector(32, 108, .8, 0);
             driveToVector(28, 72, .8, 270);       // park
             stop();
         }

@@ -9,24 +9,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-@Autonomous(name = "Test Odometry")
+@Autonomous(name = "Left Park")
 //@Disabled
-public class TestOdometry extends OdometryAutonomous
+public class Left_Park extends OdometryAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
 
         setConfig();
-        initCoords(0,0,0);
+        initCoords(0,24,0);
         waitForStart();
         while (opModeIsActive()&& !isStopRequested())
         {
-            release();
+            driveToVector(24,0,0.5,0);
+            openCollector();
             sleep(2000);
-            grab();
             stop();
-
 
 
         }
