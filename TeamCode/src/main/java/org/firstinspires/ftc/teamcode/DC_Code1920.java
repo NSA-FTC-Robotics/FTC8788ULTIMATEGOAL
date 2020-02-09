@@ -210,7 +210,7 @@ public class DC_Code1920 extends OpMode
 
 
 
-        if(gamepad2.left_stick_x>0.05)
+        if(gamepad2.left_stick_x>0.05&&!clawposition)
         {
             outake.setPosition(side);
             orienter.setPosition(sideangle);
@@ -309,9 +309,15 @@ public class DC_Code1920 extends OpMode
         {
             if(stoneangle)
             {
-                while(outake.getPosition()>leftout&&outake.getPosition()<rightout)
+                if(outake.getPosition()<leftout)
                 {
-
+                    if(gamepad2.left_stick_x>0)
+                    outake.setPosition(outake.getPosition()+0.005*gamepad2.left_stick_x);
+                }
+                if (outake.getPosition()>rightout)
+                {
+                    if(gamepad2.left_stick_x<0)
+                    outake.setPosition(outake.getPosition()+0.005*gamepad2.left_stick_x);
                 }
             }
             else
