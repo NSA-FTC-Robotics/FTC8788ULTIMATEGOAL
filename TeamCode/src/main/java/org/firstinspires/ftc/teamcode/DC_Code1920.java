@@ -53,18 +53,18 @@ public class DC_Code1920 extends OpMode
     //outake positions
 
     private double out = 0.72;
-    private double in = 0.03;
+    private double in = 0.02;
     private double side = 0.19;
-    private double rightout = 0.8;
-    private double leftout = 0.64;
+    private double rightout = 0.86;
+    private double leftout = 0.58;
 
     //orienter positions
 
-    private double parallel = 0.02;
-    private double perpendicular = .355;
-    private double sideangle = 0.178;
-    private double rightoutangle;
-    private double leftoutangle;
+    private double parallel = 0.14; //0.1
+    private double perpendicular = .455;
+    private double sideangle = 0.278;
+    private double rightoutangle = 0.28;
+    private double leftoutangle = 0;
 
 
     private final double ticksPerLevel = 342.2467;
@@ -167,20 +167,12 @@ public class DC_Code1920 extends OpMode
         if(Math.sin(driveangle)>Math.cos(driveangle)) normal = 1/(Math.sin(driveangle));
         else normal = 1/(Math.cos(driveangle));
 
-        if (fieldCentric)
-        {
-            frontLeft.setPower(normal *(Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
-            frontRight.setPower(normal *(Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
-            backLeft.setPower(normal *(Math.sin((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)+gamepad1.right_stick_x);
-            backRight.setPower(normal *(Math.cos((driveangle-getRobotAngle())%(2*Math.PI)) * dampener * speed)-gamepad1.right_stick_x);
-        }
-        else
-        {
+
             frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
             frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
             backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
             backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
-        }
+
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
     if(gamepad1.y)
@@ -296,6 +288,7 @@ public class DC_Code1920 extends OpMode
             orienter.setPosition(perpendicular);
             outake.setPosition(in);
             clawposition = false;
+            stoneangle = false;
         }
         if(Math.hypot(gamepad2.right_stick_y,gamepad2.right_stick_x)>0.001&&!clawposition&&!gamepad2.left_bumper&&!(gamepad2.left_stick_x>0.05))
         {
@@ -307,23 +300,35 @@ public class DC_Code1920 extends OpMode
 
         if(clawposition)
         {
-            if(stoneangle)
-            {
-                if(outake.getPosition()<leftout)
-                {
-                    if(gamepad2.left_stick_x>0)
-                    outake.setPosition(outake.getPosition()+0.005*gamepad2.left_stick_x);
-                }
-                if (outake.getPosition()>rightout)
+
+
+                if(outake.getPosition()>leftout)
                 {
                     if(gamepad2.left_stick_x<0)
                     outake.setPosition(outake.getPosition()+0.005*gamepad2.left_stick_x);
                 }
-            }
-            else
-            {
+                if(orienter.getPosition()>leftoutangle)
+                {
+                    if(gamepad2.left_stick_x<0)
+                    orienter.setPosition(orienter.getPosition()+0.005*gamepad2.left_stick_x);
+                }
+                if (outake.getPosition()<rightout)
+                {
+                    if(gamepad2.left_stick_x>0)
+                    outake.setPosition(outake.getPosition()+0.005*gamepad2.left_stick_x);
+                }
+                if(orienter.getPosition()<rightoutangle)
+                {
+                    if(gamepad2.left_stick_x>0)
+                    orienter.setPosition(orienter.getPosition()+0.005*gamepad2.left_stick_x);
+                }
+                if(gamepad2.y)
+                {
+                    outake.setPosition(out);
+                    orienter.setPosition(parallel);
+                }
 
-            }
+
         }
 
 
