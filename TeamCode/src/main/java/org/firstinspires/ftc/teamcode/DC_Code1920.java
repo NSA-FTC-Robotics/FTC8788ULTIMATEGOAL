@@ -164,14 +164,14 @@ public class DC_Code1920 extends OpMode
         driveangle = (Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4);
         speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         telemetry.addData("DriveAngle", driveangle);
-        if(Math.sin(driveangle)>Math.cos(driveangle)) normal = 1/(Math.sin(driveangle));
-        else normal = 1/(Math.cos(driveangle));
+        if(Math.sin(driveangle)>Math.cos(driveangle)) normal = 1/Math.abs((Math.sin(driveangle)));
+        else normal = 1/Math.abs((Math.cos(driveangle)));
 
 
-            frontLeft.setPower(Math.cos(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
-            frontRight.setPower(Math.sin(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
-            backLeft.setPower(Math.sin(driveangle)*dampener*speed+gamepad1.right_stick_x*dampener);
-            backRight.setPower(Math.cos(driveangle)*dampener*speed-gamepad1.right_stick_x*dampener);
+            frontLeft.setPower(Math.cos(driveangle)*normal*dampener*speed+gamepad1.right_stick_x*dampener);
+            frontRight.setPower(Math.sin(driveangle)*normal*dampener*speed-gamepad1.right_stick_x*dampener);
+            backLeft.setPower(Math.sin(driveangle)*normal*dampener*speed+gamepad1.right_stick_x*dampener);
+            backRight.setPower(Math.cos(driveangle)*normal*dampener*speed-gamepad1.right_stick_x*dampener);
 
        // strafe(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), getLeftStickAngle()-getRobotAngle());
 
