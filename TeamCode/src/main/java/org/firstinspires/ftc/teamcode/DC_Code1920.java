@@ -35,6 +35,8 @@ public class DC_Code1920 extends OpMode
     private Servo orienter;
     private Servo grabber;
     private Servo encoderlift;
+    private Servo leftclaw;
+    private Servo rightclaw;
 
     private double towerHeight = 0; // tracks the height of the tower the robot is working on
     private double dampener = 1; // slows the robot down on command
@@ -114,6 +116,12 @@ public class DC_Code1920 extends OpMode
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.5);
+
+        leftclaw = hardwareMap.get(Servo.class,"leftclaw");
+        leftclaw.setPosition(0);
+
+        rightclaw = hardwareMap.get(Servo.class,"rightclaw");
+        rightclaw.setPosition(1);
 
         fieldCentric = false;
         apressed = false;
@@ -337,6 +345,19 @@ public class DC_Code1920 extends OpMode
             grabber.setPosition(0.3);
         if (gamepad2.b)
             grabber.setPosition(0);
+
+
+
+        if (gamepad2.dpad_down)
+        {
+            leftclaw.setPosition(0.67);
+            rightclaw.setPosition(0.35);
+        }
+        if (gamepad2.dpad_up)
+        {
+            leftclaw.setPosition(0);
+            rightclaw.setPosition(1);
+        }
 
 
 

@@ -18,12 +18,12 @@ public class Red_Foundation extends OdometryAutonomous
     {
 
         setConfig();
-        initCoords(8.75, 105, 90);
-        release();
+        initCoords(8.75, 105, 180);
         waitForStart();
         while (opModeIsActive()&& !isStopRequested())
         {
-           driveToVector(31,124,0.8,180);
+           hover();
+            driveToVector(31,124,0.8,180);
            backwards(0.4,800);
            grab();
            backwards(0.4,600);
@@ -32,7 +32,6 @@ public class Red_Foundation extends OdometryAutonomous
            release();
            backwards(0.5,800);
            driveToVector(12,96,0.8,270);
-           grab();
            driveToVector(12,72,0.8,270);
             openCollector();
            stop();

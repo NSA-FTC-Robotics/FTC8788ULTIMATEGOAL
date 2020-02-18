@@ -102,23 +102,23 @@ public class Red_Skystone2 extends OdometryAutonomous
         while (opModeIsActive() && !isStopRequested()) {
             FinalSkystonePosition = SkystonePosition;
             openCollector();
-            suction();
+
 
             // collects first stone
             if (FinalSkystonePosition == 0) {
                 driveToVector(32, 28, .8, 0);
                 driveToVector(54, 28, .8,0);
-                intakeCollector();
+
                 driveToVector(32, 28, .8, 0);
             } else if (FinalSkystonePosition == 1) {
                 driveToVector(32, 36, .8, 0);
                 driveToVector(52, 36, .8,0);
-                intakeCollector();
+
                 driveToVector(32, 36, .8, 0);
             } else if (FinalSkystonePosition == 2) {
                 driveToVector(32, 44, .8, 0);
                 driveToVector(52, 44, .8, 0); // needs fixing
-                intakeCollector();
+
                 driveToVector(32, 44, .8, 0);
             }
 
@@ -126,7 +126,6 @@ public class Red_Skystone2 extends OdometryAutonomous
             driveToVector(33, 72, .8, 90);
             driveToVector(33, 80, .8, 90);
 
-            spit();
 
 
 
@@ -148,7 +147,7 @@ public class Red_Skystone2 extends OdometryAutonomous
 
                 driveToVector(33, 72, .8, 90);
                 driveToVector(33, 96, .8, 90);
-                spit();
+
             }
             driveToVector(28, 72, .8, 90);       // park
                 stop();

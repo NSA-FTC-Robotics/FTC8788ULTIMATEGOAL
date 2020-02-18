@@ -123,7 +123,7 @@ public class Blue_Skystone2 extends OdometryAutonomous
             // collects first stone
             driveToVector(32, 108, .8, 0);
             driveToVector(52, 108, .8,0);
-            intakeCollector();
+
             driveToVector(32, 108, .8, 0);
             driveToVector(28, 72, .8, 270);       // park
             stop();

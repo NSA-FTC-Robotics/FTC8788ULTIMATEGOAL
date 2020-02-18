@@ -53,8 +53,8 @@ public abstract class OdometryAutonomous extends LinearOpMode
     private DcMotor passiveWinch; //port 2
     private DcMotor activeWinch; //port 3
 
-    private Servo leftCollector;
-    private Servo rightCollector;
+   private Servo leftclaw;
+   private Servo rightclaw;
     private Servo outake;
     private Servo orienter;
     private Servo grabber;
@@ -173,12 +173,6 @@ public abstract class OdometryAutonomous extends LinearOpMode
         activeWinch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         activeWinch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftCollector = hardwareMap.get(Servo.class, "left_collector");
-        //leftCollector.setPosition(1);
-
-        rightCollector = hardwareMap.get(Servo.class, "right_collector");
-        //rightCollector.setPosition(0);
-
         outake = hardwareMap.get(Servo.class, "outake");
 
         orienter = hardwareMap.get(Servo.class, "orienter");
@@ -188,6 +182,12 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
         encoderlift = hardwareMap.get(Servo.class, "encoderlift");
         encoderlift.setPosition(0.3); // needs testing
+
+        leftclaw = hardwareMap.get(Servo.class,"leftclaw");
+        leftclaw.setPosition(0);
+
+        rightclaw = hardwareMap.get(Servo.class,"rightclaw");
+        rightclaw.setPosition(1);
 
 
 
@@ -205,18 +205,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
 
     public void openCollector()
     {
-        intake1.setPower(0.2);
-        intake2.setPower(-0.2);
-        rightCollector.setPosition(0.45);
-        sleep(50);
-        leftCollector.setPosition(0.55);
+        intake1.setPower(1);
         sleep(400);
-
-    }
-    public void intakeCollector()
-    {
-        leftCollector.setPosition(0.75);
-        rightCollector.setPosition(0.17);
+        intake1.setPower(0);
     }
 
     public void initCoords(double x, double y, double t)
@@ -348,33 +339,7 @@ public abstract class OdometryAutonomous extends LinearOpMode
         backLeft.setPower(0);
         backRight.setPower(0);
     }
-    public void forward(double power)
-    {
-        frontLeft.setPower(0.5*power);
-        frontRight.setPower(0.5*power);
-        backLeft.setPower(0.5*power);
-        backRight.setPower(0.5*power);
-        sleep(200);
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-    }
-    public void backward(double power)
-    {
-        frontLeft.setPower(-power);
-        frontRight.setPower(-power);
-        backLeft.setPower(-power);
-        backRight.setPower(-power);
-    }
 
-    public void zeroPower()
-    {
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
-    }
 
     // send in x/y point, points you in angle direction to go
     public double target(double x, double y) //returns degrees
@@ -477,7 +442,9 @@ public abstract class OdometryAutonomous extends LinearOpMode
     public void driveToVector (double targetX, double targetY, double power, double endDirection)
     {
         double distance;
+        double diffangle;
         double da = 1;
+        double ra = 1;
         //double sd = Math.hypot((targetX-fieldX),(targetY-fieldY));
 
         distance = Math.hypot((targetX-fieldX),(targetY-fieldY));
@@ -487,13 +454,16 @@ public abstract class OdometryAutonomous extends LinearOpMode
                 distance = Math.hypot((targetX - fieldX), (targetY - fieldY));
                 if (distance < 20) da = (0.8*Math.pow(distance/20,2)+0.2);
 
+                diffangle = Math.abs(endDirection-Math.toDegrees(fieldT));
+                if (diffangle<60) ra = (0.8*Math.pow(distance/60,2)+0.2);
+
                 updateposition();
                 alterTheta(endDirection);
                 alterTragectory(target(targetX, targetY));
-                frontLeft.setPower((flma * power * da) + flta );
-                frontRight.setPower((frma * power * da) + frta );
-                backLeft.setPower((blma * power * da) + blta );
-                backRight.setPower((brma * power * da) + brta );
+                frontLeft.setPower((flma * power * da) + flta *ra );
+                frontRight.setPower((frma * power * da) + frta*ra );
+                backLeft.setPower((blma * power * da) + blta*ra );
+                backRight.setPower((brma * power * da) + brta*ra );
                 updateposition();
             }
             frontLeft.setPower(0);
@@ -574,28 +544,11 @@ public abstract class OdometryAutonomous extends LinearOpMode
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
-    public void setPower0()
-    {
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
-    }
-    public void suction ()
-    {
-        intake1.setPower(-0.2);
-        intake2.setPower(0.2);
-    }
 
     public void stopCollector()
     {
         intake1.setPower(0);
         intake2.setPower(0);
-    }
-    public void spit()
-    {
-        intake1.setPower(0.5);
-        intake2.setPower(-0.5);
     }
     public  void leftspin()
     {
@@ -661,19 +614,18 @@ public abstract class OdometryAutonomous extends LinearOpMode
     }
     public void grab()
     {
-        activeWinch.setPower(0.25);
-        passiveWinch.setPower(0.25);
-        sleep(300);
-        activeWinch.setPower(0);
-        passiveWinch.setPower(0);
+        leftclaw.setPosition(0.67);
+        rightclaw.setPosition(0.35);
+    }
+    public  void hover()
+    {
+        leftclaw.setPosition(0.4);
+        rightclaw.setPosition(0.6);
     }
     public void release()
     {
-        activeWinch.setPower(-0.5);
-        passiveWinch.setPower(-0.5);
-        sleep(300);
-        activeWinch.setPower(0);
-        passiveWinch.setPower(0);
+        leftclaw.setPosition(0);
+        rightclaw.setPosition(1);
     }
 
 

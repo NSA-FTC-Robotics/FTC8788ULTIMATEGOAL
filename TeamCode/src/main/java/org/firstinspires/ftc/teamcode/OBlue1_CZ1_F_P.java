@@ -105,7 +105,7 @@ public class OBlue1_CZ1_F_P extends OdometryAutonomous
         waitForStart();
         openCollector();
         driveToVector(24,50,0.5,0);
-        intakeCollector();
+
         driveToVector(24,8.75,0.5,0);
         openCollector();
         waypointVector(48,8.75,0.5,1,0);
