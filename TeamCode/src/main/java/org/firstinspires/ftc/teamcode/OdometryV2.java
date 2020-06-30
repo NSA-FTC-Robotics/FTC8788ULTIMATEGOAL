@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -39,6 +41,9 @@ public abstract class OdometryV2 extends LinearOpMode
     // Motion Variables
     private double xVel;
     private double yVel;
+    private double tVel;
+    private double drivePower = 0; // power percentage for linear movement
+    private double turnPower = 0;
 
     //IMU Configuration
     BNO055IMU imu;
@@ -87,6 +92,7 @@ public abstract class OdometryV2 extends LinearOpMode
         {
         }
     }
+    //Navigation
     public void updatePosition() //updates current position and true motion
     {
         //Position tracking
@@ -107,8 +113,29 @@ public abstract class OdometryV2 extends LinearOpMode
         Velocity motion = imu.getVelocity();
         xVel = (motion.xVeloc)*Math.cos(fieldT)-(motion.yVeloc*Math.sin(fieldT)); // uses velocity values with respect to
         yVel = (motion.xVeloc)*Math.sin(fieldT)+(motion.yVeloc*Math.cos(fieldT)); // the REV hubs to track field velocity
-    }
 
+        AngularVelocity angVel = imu.getAngularVelocity();
+        tVel = angVel.xRotationRate;
+    }
+    //Guidance
+
+    //Control
+    public void adjustVelocity( double linearDirection, double linearSpeed, String angularDirection, double angularSpeed)
+    {
+        updatePosition();
+        if(Math.hypot(xVel,yVel)<linearSpeed)
+        {
+            drivePower +=0.02; // this dictates how quickly the robot accelerates
+        }
+        else if(Math.hypot(xVel,yVel)>linearSpeed)
+        {
+            drivePower -=0.02;
+        }
+        frontLeft.setPower(Math.cos(linearDirection-fieldT-Math.PI/4)*drivePower);
+        frontRight.setPower(Math.sin(linearDirection-fieldT-Math.PI/4)*drivePower);
+        backLeft.setPower(Math.sin(linearDirection-fieldT-Math.PI/4)*drivePower);
+        backRight.setPower(Math.cos(linearDirection-fieldT-Math.PI/4)*drivePower);
+    }
 
 
 }
